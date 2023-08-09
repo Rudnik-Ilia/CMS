@@ -16,7 +16,7 @@ def callback(ch, method, properties, body):
     print(response_string)
 
 
-channel.basic_consume(queue='hello', on_message_callback=callback, auto_ack=True)
+channel.basic_consume(queue='telegram', on_message_callback=callback, auto_ack=True)
 channel.basic_qos(prefetch_count=1)
 
 thread = Thread(target=channel.start_consuming)
