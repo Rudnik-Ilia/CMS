@@ -3,8 +3,8 @@
 std::string HOST = "127.0.0.1";
 std::string PORT = "8000";
 
-std::string host_auth = "/app1/";
-std::string port_auth = "/app1/";
+std::string host_auth = "127.0.0.1";
+std::string port_auth = "8090";
 
 void Define_type_Request(http::request<http::string_body>& request) 
 {
@@ -48,7 +48,9 @@ std::string Get_Token(http::request<http::string_body>& request)
 
     if(author != request.end())
     {
-        return author->value().to_string();
+        std::string extract_value = author->value().to_string().erase(0, 10);
+        extract_value.pop_back();
+        return extract_value;
     }
     else
     {
@@ -58,7 +60,7 @@ std::string Get_Token(http::request<http::string_body>& request)
 
 int Check_Token(std::string token)
 {
-    std::cout << "Checking!" << std::endl;
+    std::cout << token << std::endl;
     return 1;
 }
 
@@ -132,7 +134,12 @@ void Forward_Request(tcp::socket& socket, http::request<http::string_body>& requ
     }
 }
 
-void Define_Service()
+void Request_to_AuthorizationService()
+{
+
+}
+
+void Define_Service(http::request<http::string_body>& request)
 {
 
 }
