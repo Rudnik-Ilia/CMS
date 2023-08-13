@@ -15,7 +15,6 @@ int main()
             acceptor.accept(socket);
 
             std::thread(&Handle_Connection, std::move(socket)).detach();
-            
         }
         catch(const std::exception& e)
         {
@@ -24,6 +23,10 @@ int main()
 
     }
     acceptor.close();
+    return 0;
+}
+
+
 
 
     // while(true) 
@@ -65,6 +68,3 @@ int main()
     //     boost::beast::http::write(socket, response);
     //     socket.shutdown(boost::asio::ip::tcp::socket::shutdown_send);
     // }
-
-    return 0;
-}

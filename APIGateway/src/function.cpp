@@ -44,13 +44,14 @@ void Send_Response(tcp::socket& socket, http::request<http::string_body>& reques
 
 std::string Get_Token(http::request<http::string_body>& request)
 {
-    auto author = request.find(boost::beast::http::field::authorization);
+    auto author = request[boost::beast::http::field::authorization];
 
-    if(author != request.end())
+    std::cout << author.to_string() << std::endl;
+
+    if(author.to_string().size() != 0)
     {
-        std::string extract_value = author->value().to_string().erase(0, 10);
-        extract_value.pop_back();
-        return extract_value;
+
+        return author.to_string();
     }
     else
     {
@@ -82,21 +83,17 @@ void Handle_Connection(tcp::socket socket)
 
             if(token.compare("No token") == 0)
             {
-                std::cout << "Not token" << std::endl;
                 Send_Response(socket, request, http::status::unauthorized, "You need to have a token!");
             }
             else
-            {
-                if(request.target() == "/login")
+            {   
+                if(Check_Token(token))
                 {
-                    std::cout << "get token" << std::endl;
+                    Forward_Request(socket, request, HOST, PORT, "rest");
                 }
-                else 
-                {   
-                    if(Check_Token(token))
-                    {
-                        Forward_Request(socket, request, HOST, PORT, "rest");
-                    }
+                else
+                {
+                    Send_Response(socket, request, http::status::unauthorized, "You need to have a VALID token!");
                 }
             }
 
@@ -143,6 +140,13 @@ void Define_Service(http::request<http::string_body>& request)
 {
 
 }
+
+
+
+
+
+
+
 
 // std::string forwardRequest(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path) 
 // {
