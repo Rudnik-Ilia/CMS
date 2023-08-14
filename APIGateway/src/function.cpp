@@ -46,8 +46,6 @@ std::string Get_Token(http::request<http::string_body>& request)
 {
     auto author = request[boost::beast::http::field::authorization];
 
-    std::cout << author.to_string() << std::endl;
-
     if(author.to_string().size() != 0)
     {
 
@@ -61,7 +59,25 @@ std::string Get_Token(http::request<http::string_body>& request)
 
 int Check_Token(std::string token)
 {
-    std::cout << token << std::endl;
+    net::io_context ioContext;
+    tcp::socket socket(ioContext);
+
+    tcp::endpoint end_point(net::ip::make_address(HOST), std::stoi(port_auth));
+    socket.connect(end_point);
+
+    http::request<http::string_body> request(http::verb::post, "/check", 11);
+    request.set(http::field::content_type, "application/json"); 
+    request.set(http::field::host, HOST + ":" + port_auth);
+    request.set(http::field::user_agent, "Boost.Beast");
+
+    const std::string requestBody = R"({"token": ")" + token + R"("})";
+    request.body() = requestBody;
+
+    request.prepare_payload();
+    http::write(socket, request);
+
+    std::cout << "im here" << std::endl;
+
     return 1;
 }
 
@@ -89,7 +105,7 @@ void Handle_Connection(tcp::socket socket)
             {   
                 if(Check_Token(token))
                 {
-                    Forward_Request(socket, request, HOST, PORT, "rest");
+                    // Forward_Request(socket, request, HOST, PORT, "rest");
                 }
                 else
                 {

@@ -14,6 +14,7 @@ def get_jwt_token(payload):
 def check_jwt_token(token):
     try:
         jwt.decode(token, JWT_SALT, algorithms=["HS256"])
+        print("TOKEN IS FINE")
         return ERRORS.VALID
     except jwt.DecodeError:
         print("INVALID TOKEN")
@@ -21,3 +22,6 @@ def check_jwt_token(token):
     except jwt.exceptions.ExpiredSignatureError:
         print("JWT has expired")
         return ERRORS.EXPIRED
+
+
+check_jwt_token("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImlsaWEiLCJwYXNzd29yZCI6IjEyMzQ1IiwiZXhwIjoxNjkyMDE2NTIzfQ.nk36GlhJIurlkslLe7bYEphVT-JVbhEmQEWYa7Qjbnw")
