@@ -1,59 +1,47 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <time.h>
+#include <iostream>
+#include <boost/multiprecision/cpp_int.hpp>
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
+#include <chrono>
 
-bool is_prime(size_t num)
+namespace mp = boost::multiprecision;
+
+bool is_prime(const mp::cpp_int &num)
 {
     if (num <= 1)
-    {
         return false;
-    }
-    for (size_t i = 2; i * i <= num; ++i)
+    for (mp::cpp_int i = 2; i * i <= num; ++i)
     {
         if (num % i == 0)
-        {
             return false;
-        }
     }
     return true;
 }
 
 
-size_t generate_prime_with_digits(size_t digits)
-{
-    size_t min_value = 1;
-    for (size_t i = 1; i < digits; ++i)
-    {
-        min_value *= 10;
-    }
-    size_t max_value = min_value * 10 - 1;
-
-
-    size_t prime_candidate = min_value + rand() % (max_value - min_value + 1);
-    if (prime_candidate % 2 == 0)
-    {
-        prime_candidate++;
-    }
-
-    while (true)
-    {
-        if (is_prime(prime_candidate))
-        {
-            return prime_candidate;
-        }
-        prime_candidate += 2;
-    }
-}
-
 int main()
 {
-    srand(time(NULL));
+    // mp::cpp_int num("2");
+    // mp::cpp_int exp("2843");
+    // mp::cpp_int result = power(num, exp);
 
-    size_t digits = 10; // Number of digits in the prime number
-    size_t prime = generate_prime_with_digits(2);
+    // std::cout << result << std::endl;
 
-    printf("Prime number with %zu digits: %zu\n", digits, prime);
+    // boost::random::mt19937 rng(std::time(0));
+
+    auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+    boost::random::mt19937 rng(static_cast<unsigned int>(seed));
+
+    mp::cpp_int min_value = mp::pow(mp::cpp_int(10), 9);
+    mp::cpp_int max_value = mp::pow(mp::cpp_int(10), 10) - 1;
+
+
+    boost::random::uniform_int_distribution<mp::cpp_int> distribution(min_value, max_value);
+    mp::cpp_int random_number = distribution(rng);
+
+    std::cout << "Random 10-Digit Big Number: " << random_number << std::endl;
+    std::cout << min_value << std::endl;
+    std::cout << max_value << std::endl;
 
     return 0;
 }

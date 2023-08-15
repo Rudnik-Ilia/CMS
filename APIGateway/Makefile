@@ -3,7 +3,7 @@ CFLAGS = -lpthread
 CPPFLAGS = -I 
 FOLDER = -I include 
 
-SOURSES = src/function.cpp src/server.cpp
+SOURSES = src/server.cpp test/test_server.cpp
 
 EXECUTABLE = server
 

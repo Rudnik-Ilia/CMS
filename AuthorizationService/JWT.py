@@ -24,4 +24,3 @@ def check_jwt_token(token):
         return ERRORS.EXPIRED
 
 
-check_jwt_token("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImlsaWEiLCJwYXNzd29yZCI6IjEyMzQ1IiwiZXhwIjoxNjkyMDE2NTIzfQ.nk36GlhJIurlkslLe7bYEphVT-JVbhEmQEWYa7Qjbnw")
