@@ -29,6 +29,32 @@ void Define_type_Request(http::request<http::string_body>& request)
     }
 }
 
+void Send_Request(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path)
+{
+    net::io_context ioContext;
+    tcp::socket socket(ioContext);
+
+    tcp::endpoint end_point(net::ip::make_address(HOST), std::stoi(PORT));
+    socket.connect(end_point);
+
+    http::request<http::string_body> request(http::verb::post, "/check", 11);
+    request.set(http::field::content_type, "application/json"); 
+    request.set(http::field::host, HOST + ":" + port_auth);
+    request.set(http::field::user_agent, "Boost.Beast");
+
+    request.prepare_payload();
+    http::write(socket, request);
+
+    beast::flat_buffer buffer;
+    http::response<http::string_body> response;
+    http::read(socket, buffer, response);
+
+    std::cout << response.body() << std::endl;
+
+    socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+    socket.close();    
+}
+
 void Send_Response(tcp::socket& socket, http::request<http::string_body>& request, http::status status, const std::string& body)
 {
     http::response<http::string_body> response{};
@@ -97,6 +123,7 @@ void Handle_Connection(tcp::socket socket)
         beast::flat_buffer buffer;
         http::request<http::string_body> request;
         http::read(socket, buffer, request);
+
         if(request.target() == "/mix" && request.method() == http::verb::post)
         {
             json data = nlohmann::json::parse(request.body());
@@ -117,7 +144,8 @@ void Handle_Connection(tcp::socket socket)
         }
         else if(request.target() == "/signin" && request.method() == http::verb::post)
         {
-            Forward_Request(socket, request, host_auth, port_auth, "rest");
+            std::cout << request.body() << std::endl;
+            // Forward_Request(socket, request, host_auth, port_auth, "rest");
         }
         else
         {
