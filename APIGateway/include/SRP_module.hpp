@@ -6,6 +6,7 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include <chrono>
 
+
 using big_t = boost::multiprecision::cpp_int;
 
 const big_t ROOT = 3;
@@ -18,7 +19,6 @@ const big_t MAX_VAL = 9999;
 class SRP
 {
     public:
-
         explicit SRP();
         SRP(const SRP& other) = delete;
         SRP& operator=(const SRP& other) = delete;
@@ -27,21 +27,18 @@ class SRP
         ~SRP(){};
 
         big_t get_mixture() const;
-        big_t get_key_for_encode(big_t mix) const;
+        void set_key_for_encode(big_t mix);
+
         big_t get_secret() const;
- 
+        big_t get_key() const;
+
+        std::string encrypt_by_key(const std::string &plaintext, const std::string &key);
+        std::string decrypt_by_key(const std::string &cryptotext, const std::string &key);
+
     private:
         big_t m_secret;
-
-        inline big_t power(big_t base, big_t exponent) const
-        {
-            big_t result = 1;
-            for (int i = 0; i < exponent; ++i) 
-            {
-                result *= base;
-            }
-            return result;
-        }
+        big_t m_key;
+        std::string m_s_key;
 
         inline bool is_prime(const big_t &num) const
         {

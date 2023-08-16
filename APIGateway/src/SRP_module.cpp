@@ -10,15 +10,38 @@ SRP::SRP()
 
 big_t SRP::get_mixture() const
 {
-    return (power(ROOT, m_secret)) % PRIME; 
+    return powm(ROOT, m_secret, PRIME); 
 }
 
-big_t SRP::get_key_for_encode(big_t mix) const
+void SRP::set_key_for_encode(big_t mix)
 {
-    return (power(mix, m_secret)) % PRIME; 
+    m_key = powm(mix, m_secret, PRIME);
+    m_s_key = boost::lexical_cast<std::string>(get_key()); 
 }
 
 big_t SRP::get_secret() const
 {
     return m_secret;
+}
+
+big_t SRP::get_key() const
+{
+    return m_key;
+}
+
+std::string SRP::encrypt_by_key(const std::string &plaintext, const std::string &key)
+{
+    std::string encrypted = plaintext;
+
+    for (size_t i = 0; i < encrypted.length(); ++i)
+    {
+        encrypted[i] ^= key[i % key.length()];
+    }
+
+    return encrypted;
+}
+
+std::string SRP::decrypt_by_key(const std::string &cryptotext, const std::string &key)
+{
+    return encrypt_by_key(cryptotext, key);
 }

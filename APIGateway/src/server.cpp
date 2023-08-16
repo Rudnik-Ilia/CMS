@@ -1,4 +1,5 @@
 #include "server.hpp"
+#include "SRP_module.hpp"
 
 std::string HOST = "127.0.0.1";
 std::string PORT = "8000";
@@ -96,10 +97,26 @@ void Handle_Connection(tcp::socket socket)
         beast::flat_buffer buffer;
         http::request<http::string_body> request;
         http::read(socket, buffer, request);
-
-        if(request.target() == "/signin" && request.method() == http::verb::post)
+        if(request.target() == "/mix" && request.method() == http::verb::post)
         {
-            
+            json data = nlohmann::json::parse(request.body());
+            std::string client_mix = data["mixture"];
+
+            SRP srp;
+            std::string gate_mix = boost::lexical_cast<std::string>(srp.get_mixture());
+
+            big_t mix(client_mix);
+            srp.set_key_for_encode(mix);
+            std::string gate_key = boost::lexical_cast<std::string>(srp.get_key());
+
+            std::cout << gate_key << std::endl;
+      
+            Send_Response(socket, request, http::status::ok, gate_mix);
+
+            return;
+        }
+        else if(request.target() == "/signin" && request.method() == http::verb::post)
+        {
             Forward_Request(socket, request, host_auth, port_auth, "rest");
         }
         else
@@ -121,9 +138,7 @@ void Handle_Connection(tcp::socket socket)
                     Send_Response(socket, request, http::status::unauthorized, "You need to have a VALID token!");
                 }
             }
-
         }
-
         socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
         socket.close();
     }
