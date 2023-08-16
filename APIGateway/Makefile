@@ -3,7 +3,7 @@ CFLAGS = -lpthread
 CPPFLAGS = -I 
 FOLDER = -I include 
 
-SOURSES = src/server.cpp test/test_server.cpp src/SRP_module.cpp
+SOURSES = src/server.cpp test/test_server.cpp src/SRP_module.cpp src/router.cpp
 
 EXECUTABLE = server
 

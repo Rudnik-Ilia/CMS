@@ -1,4 +1,7 @@
 #include "server.hpp"
+#include "router.hpp"
+
+
 
 
 
@@ -7,64 +10,54 @@ int main()
     net::io_context ioContext;
     tcp::acceptor acceptor(ioContext, tcp::endpoint(tcp::v4(), 9090));
 
+    Router router;
+
+    router.AddRoute("/mix", [](http::request<http::string_body>& request, tcp::socket& socket)
+    {
+        std::cout << "MIX" << std::endl;
+    });
+
+    router.AddRoute("/signin", [](http::request<http::string_body>& request, tcp::socket& socket)
+    {
+        std::cout << "SIGNIN" << std::endl;
+    });
+
+
     while(true)
     {
-        try
-        {
-            tcp::socket socket(ioContext);
-            acceptor.accept(socket);
+        tcp::socket socket(ioContext);
+        acceptor.accept(socket);
 
-            std::thread(&Handle_Connection, std::move(socket)).detach();
-        }
-        catch(const std::exception& e)
+        std::thread([socket = std::move(socket), &router]() mutable
         {
-            std::cerr << "Main Loop: " << e.what() << '\n';
-        }
+            try
+            {
+                router.Run(socket);
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << "Main Loop: " << e.what() << '\n';
+            }
 
+        }).detach();
     }
-    acceptor.close();
+
     return 0;
 }
 
 
-
-
-    // while(true) 
+    // while(true)
     // {
-    //     tcp::socket socket(ioContext);
-    //     acceptor.accept(socket);
-
-    //     beast::flat_buffer buffer;
-    //     http::request<http::string_body> request;
-    //     http::read(socket, buffer, request);
-
-    //     std::string restOfURL = request.target().to_string();
-    //     std::string begin_of_URL = restOfURL.substr(1, PATH.length() - 1);
-    //     restOfURL.erase(0, PATH.length());
-
-    //     http::response<http::string_body> response;
-    //     if(begin_of_URL == "app1/")
+    //     try
     //     {
-    //         std::cout << begin_of_URL << std::endl;
-    //         std::cout << restOfURL << std::endl;
-    //         std::string responseBody = forwardRequest(HOST, PORT, restOfURL);
+    //         tcp::socket socket(ioContext);
+    //         acceptor.accept(socket);
 
-    //         json reply = json::parse(responseBody);
-
-    //         http::response<http::string_body> response{http::status::ok, request.version()};
-    //         response.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-    //         response.set(http::field::content_type, "text/html");
-    //         response.body() = reply.dump();
-    //         response.prepare_payload();
-
-    //         http::write(socket, response);
+    //         std::thread(&Handle_Connection, std::move(socket)).detach();
     //     }
-    //     else if(begin_of_URL == "app2/")
+    //     catch(const std::exception& e)
     //     {
-    //         std::cout << begin_of_URL << std::endl;
-    //         std::cout << restOfURL << std::endl;
+    //         std::cerr << "Main Loop: " << e.what() << '\n';
     //     }
-
-    //     boost::beast::http::write(socket, response);
-    //     socket.shutdown(boost::asio::ip::tcp::socket::shutdown_send);
     // }
+    // acceptor.close();
