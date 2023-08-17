@@ -7,25 +7,29 @@ std::string PORT = "8000";
 std::string host_auth = "127.0.0.1";
 std::string port_auth = "8090";
 
-void Define_type_Request(http::request<http::string_body>& request) 
+int Define_type_Request(http::request<http::string_body>& request) 
 {
     switch (request.method()) 
     {
         case http::verb::get:
             std::cout << "Received a GET request" << std::endl;
-            break;
+            return GET;
+
         case http::verb::post:
             std::cout << "Received a POST request" << std::endl;
-            break;
+            return POST;
+        
         case http::verb::put:
             std::cout << "Received a PUT request" << std::endl;
-            break;
+            return PUT;
+    
         case http::verb::delete_:
             std::cout << "Received a DELETE request" << std::endl;
-            break;
+            return DELETE;
+    
         default:
             std::cout << "Received an unsupported request method" << std::endl;
-            break;
+            return UNSUPPORTED;
     }
 }
 
@@ -115,6 +119,8 @@ int Check_Token(std::string token)
 
     return 1;
 }
+
+
 
 void Handle_Connection(tcp::socket socket)
 {

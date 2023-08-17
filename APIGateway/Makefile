@@ -1,5 +1,5 @@
 CC = g++ 
-CFLAGS = -lpthread 
+CFLAGS = -std=c++14 -lpthread 
 CPPFLAGS = -I 
 FOLDER = -I include 
 
