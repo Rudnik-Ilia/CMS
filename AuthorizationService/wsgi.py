@@ -40,7 +40,8 @@ def restrict_access():
 @app.route("/", methods=["POST"])
 def check_response():
     if request.method == "POST":
-        return make_response(jsonify("Im Authorization Service!"), 200)
+        # return make_response(jsonify("Im Authorization Service!"), 200)
+        return {"k":"d"}
 
 
 @app.route("/check", methods=["POST"])

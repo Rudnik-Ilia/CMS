@@ -120,8 +120,6 @@ int Check_Token(std::string token)
     return 1;
 }
 
-
-
 void Handle_Connection(tcp::socket socket)
 {
     try

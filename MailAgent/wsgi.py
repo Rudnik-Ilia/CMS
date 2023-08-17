@@ -5,28 +5,28 @@ from sender_telegram import send_to_telegram
 
 app = Flask(__name__)
 
-rabbit = pika.BlockingConnection(pika.ConnectionParameters("localhost"))
-channel = rabbit.channel()
-channel.queue_declare(queue='telegram')
-
-
-def callback(ch, method, properties, body):
-    response_string = body.decode('utf-8')
-    send_to_telegram(response_string)
-    print(response_string)
-
-
-channel.basic_consume(queue='telegram', on_message_callback=callback, auto_ack=True)
-channel.basic_qos(prefetch_count=1)
-
-thread = Thread(target=channel.start_consuming)
-thread.start()
+# rabbit = pika.BlockingConnection(pika.ConnectionParameters("localhost"))
+# channel = rabbit.channel()
+# channel.queue_declare(queue='telegram')
+#
+#
+# def callback(ch, method, properties, body):
+#     response_string = body.decode('utf-8')
+#     send_to_telegram(response_string)
+#     print(response_string)
+#
+#
+# channel.basic_consume(queue='telegram', on_message_callback=callback, auto_ack=True)
+# channel.basic_qos(prefetch_count=1)
+#
+# thread = Thread(target=channel.start_consuming)
+# thread.start()
 
 
 # channel.start_consuming()
 
 
-@app.route("/agent", methods=["GET"])
+@app.route("/mailagent", methods=["GET"])
 def start():
     if request.method == "GET":
         return make_response(jsonify("Im mail agent!"), 200)
