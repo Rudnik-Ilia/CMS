@@ -13,12 +13,20 @@ class MasterRequest : public IRequest
         MasterRequest& operator=(MasterRequest&& other) = delete;
         ~MasterRequest();
 
-        void RequestTo() override;
+        void RequestTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path) override;
 
         void ResponseTo(http::status status, const std::string& body) override;
         void ForwardTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path) override;
-        std::string Get_Token();
+        void Get_Token();
+
+        int Check_Token(std::string token);
+
         bool Authorized();
+
+        void God_Mode()
+        {
+            m_authorized = true;
+        }
 
     private:
         std::string m_token;

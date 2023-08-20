@@ -7,8 +7,6 @@
 
 
 
-
-
 int main() 
 {
     net::io_context ioContext;
@@ -21,6 +19,7 @@ int main()
     router.AddRoute("/gateway", [](http::request<http::string_body>& request, tcp::socket& socket)
     {
         Define_type_Request(request);
+
         MasterRequest requestSelf(socket, request);
         requestSelf.ResponseTo(http::status::ok, "I am Big Boo!");
     });
@@ -28,8 +27,10 @@ int main()
     router.AddRoute("/mix", [](http::request<http::string_body>& request, tcp::socket& socket)
     {
         Define_type_Request(request);
+
         SRP srp;
         Crypto_Request requestSelf(socket, request, srp);
+        requestSelf.Process_Authorizing();
     });
 
     router.AddRoute("/signin", [](http::request<http::string_body>& request, tcp::socket& socket)
@@ -40,21 +41,16 @@ int main()
     router.AddRoute("/mailagent", [](http::request<http::string_body>& request, tcp::socket& socket)
     {
         Define_type_Request(request);
-        MasterRequest requestSelf(socket, request);
 
-        if(requestSelf.Authorized())
-        {
-            requestSelf.ForwardTo("127.0.0.1", "8008", "rest");
-        }
-        else
-        {
-            requestSelf.ResponseTo(http::status::unauthorized, "You need to have a token!");
-        }
+        MasterRequest requestSelf(socket, request);
+        requestSelf.God_Mode();
+        requestSelf.ForwardTo("127.0.0.1", "8008", "rest");
     });
 
     router.AddRoute("/items", [](http::request<http::string_body>& request, tcp::socket& socket)
     {
         Define_type_Request(request);
+
         MasterRequest requestSelf(socket, request);
         requestSelf.ForwardTo("127.0.0.1", "8000", "rest");
     });

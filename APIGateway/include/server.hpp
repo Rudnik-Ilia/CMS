@@ -32,9 +32,6 @@ int Define_type_Request(http::request<http::string_body> &request);
 
 void Send_Response(tcp::socket& socket, http::request<http::string_body>& request, http::status status, const std::string& body);
 
-void Handle_Connection(tcp::socket socket);
-
 void Forward_Request(tcp::socket &socket, http::request<http::string_body> &request, const std::string &host_name, const std::string &PORT, const std::string &rest_of_path);
 
-int Check_Token(std::string token);
 

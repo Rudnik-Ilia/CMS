@@ -1,5 +1,5 @@
 import json
-
+import datetime
 import jwt
 from config import JWT_SALT, ERRORS
 
@@ -24,3 +24,10 @@ def check_jwt_token(token):
         return ERRORS.EXPIRED
 
 
+payload = {
+    "login": "login",
+    "password": "password",
+    "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
+}
+
+print(get_jwt_token(payload))

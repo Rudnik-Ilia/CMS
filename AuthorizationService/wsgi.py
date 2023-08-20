@@ -41,7 +41,7 @@ def restrict_access():
 def check_response():
     if request.method == "POST":
         # return make_response(jsonify("Im Authorization Service!"), 200)
-        return {"k":"d"}
+        return {"k": "d"}
 
 
 @app.route("/check", methods=["POST"])
@@ -51,10 +51,9 @@ def check_token():
         print(token["token"])
         # token = request.headers.get("authorization")
         if check_jwt_token(token["token"]) is ERRORS.VALID:
-            return make_response(jsonify("You got it!!!"), 200)
+            return make_response(jsonify("You got it from DB Manager!!!"), 200)
         else:
-            return make_response(jsonify("FORBIDDEN ACCESS"))
-
+            return make_response(jsonify("FORBIDDEN ACCESS"), 405)
 
 
 @app.route("/signin", methods=["POST"])

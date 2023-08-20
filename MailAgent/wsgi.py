@@ -26,9 +26,9 @@ app = Flask(__name__)
 # channel.start_consuming()
 
 
-@app.route("/mailagent", methods=["GET"])
+@app.route("/mailagent", methods=["GET", "POST"])
 def start():
-    if request.method == "GET":
+    if request.method in ['POST', 'GET']:
         return make_response(jsonify("Im mail agent!"), 200)
 
 

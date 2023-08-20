@@ -9,6 +9,10 @@ srp = SRP()
 data = {"mixture": str(srp.get_mixture())}
 
 
+
+
+
+
 response = requests.post(URL_MIX, json=data)
 srp.set_key_for_encode(int(response.text))
 print(f"key :{srp.get_key()}")
@@ -22,4 +26,4 @@ user = {
 print(user)
 
 
-# response = requests.post(URL_MIX, json=user)
+response = requests.post(URL_MIX, data="Hello")
