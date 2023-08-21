@@ -4,6 +4,7 @@
 #include "SRP_module.hpp"
 #include "irequest.hpp"
 #include "crypto_request.hpp"
+#include "key_storage.hpp"
 
 
 
@@ -15,6 +16,7 @@ int main()
 // ROUTING***************************************************************************************************
 
     Router router;
+    KeyStorage key_storage;
 
     router.AddRoute("/gateway", [](http::request<http::string_body>& request, tcp::socket& socket)
     {

@@ -6,7 +6,6 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include <chrono>
 
-
 using big_t = boost::multiprecision::cpp_int;
 
 const big_t ROOT = 3;
