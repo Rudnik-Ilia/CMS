@@ -30,6 +30,7 @@ class SRP
 
         big_t get_secret() const;
         big_t get_key() const;
+        std::string get_key_asString() const;
 
         std::string encrypt_by_key(const std::string &plaintext, const std::string &key);
         std::string decrypt_by_key(const std::string &cryptotext, const std::string &key);
@@ -38,6 +39,7 @@ class SRP
         big_t m_secret;
         big_t m_key;
         std::string m_s_key;
+        std::string m_client_mix;
 
         inline bool is_prime(const big_t &num) const
         {

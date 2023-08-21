@@ -24,9 +24,13 @@ int main()
     APP.ROUTE("/mix", 
     {
         Define_type_Request(request);
+
         SRP srp;
+
         Crypto_Request requestSelf(socket, request, srp);
         requestSelf.Process_Authorizing();
+
+        APP.AddMix(requestSelf.GetClientMix(), srp.get_key_asString());
     });
 
     APP.ROUTE("/signin", 
@@ -47,6 +51,13 @@ int main()
         Define_type_Request(request);
         MasterRequest requestSelf(socket, request);
         requestSelf.ForwardTo("127.0.0.1", "8000", "rest");
+    });
+
+    APP.ROUTE("/listStorage", 
+    {
+        Define_type_Request(request);
+
+        APP.PrintStorage();
     });
 
     APP.Run();
@@ -76,6 +87,18 @@ int main()
     // tcp::acceptor acceptor(ioContext, tcp::endpoint(tcp::v4(), 9090));
    // Router router;
    // ROUTING***************************************************************************************************
+
+
+
+    //    APP.Routing("/m", [](http::request<http::string_body>& request, tcp::socket& socket)
+    // {
+    //     Define_type_Request(request);
+
+    //     SRP srp;
+    //     Crypto_Request requestSelf(socket, request, srp);
+    //     requestSelf.Process_Authorizing();
+
+    // });
      // router.AddRoute("/gateway", [](http::request<http::string_body>& request, tcp::socket& socket)
     // {
     //     Define_type_Request(request);

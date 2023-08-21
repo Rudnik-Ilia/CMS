@@ -15,14 +15,16 @@ Crypto_Request::~Crypto_Request()
 void Crypto_Request::Process_Authorizing()
 {
         json data = nlohmann::json::parse(m_request.body());
-        std::string client_mix = data["mixture"];
+        m_client_mix = data["mixture"];
+
         std::string gate_mix = boost::lexical_cast<std::string>(m_srp.get_mixture());
 
-        big_t mix(client_mix);
+        big_t mix(m_client_mix);
         m_srp.set_key_for_encode(mix);
         std::string gate_key = boost::lexical_cast<std::string>(m_srp.get_key());
-        std::cout << gate_key << std::endl;
 
+        std::cout << gate_key << std::endl;
+        
         ResponseTo(http::status::ok, gate_mix);
 }
 
@@ -46,4 +48,9 @@ void Crypto_Request::ResponseTo(http::status status, const std::string& body)
 void Crypto_Request::ForwardTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path)
 {
 
+}
+
+std::string Crypto_Request::GetClientMix()
+{
+    return m_client_mix;
 }

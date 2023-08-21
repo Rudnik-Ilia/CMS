@@ -19,11 +19,13 @@ class Crypto_Request
         void ForwardTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path);
 
         void Process_Authorizing();
+
+        std::string GetClientMix();
  
-    
     private:
         SRP& m_srp;  
         tcp::socket& m_socket;
-        http::request<http::string_body>& m_request; 
+        http::request<http::string_body>& m_request;
+        std::string m_client_mix{}; 
 };
 

@@ -18,7 +18,6 @@ void BigBoo::Routing(const std::string& path, std::function<void(http::request<h
 
 void BigBoo::Run()
 {
-    
     while(true)
     {
         tcp::socket socket(m_ioContext);
@@ -36,5 +35,19 @@ void BigBoo::Run()
             }
 
         }).detach();
+    }
+}
+
+
+void BigBoo::AddMix(std::string clientMix, std::string secretKey)
+{
+    m_keyStorage.AddKey(clientMix, secretKey);
+}
+
+void BigBoo::PrintStorage()
+{
+    for(const auto &item : m_keyStorage)
+    {
+        std::cout << item.first << ' ' << item.second << std::endl;
     }
 }

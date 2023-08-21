@@ -6,8 +6,6 @@ SRP::SRP()
     boost::random::mt19937 rng(static_cast<unsigned int>(seed));
     boost::random::uniform_int_distribution<big_t> distribution(MIN_VAL, MAX_VAL);
     m_secret = distribution(rng);
-
-    
 }
 
 big_t SRP::get_mixture() const
@@ -29,6 +27,11 @@ big_t SRP::get_secret() const
 big_t SRP::get_key() const
 {
     return m_key;
+}
+
+std::string SRP::get_key_asString() const
+{
+    return m_s_key;
 }
 
 std::string SRP::encrypt_by_key(const std::string &plaintext, const std::string &key)

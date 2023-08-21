@@ -4,7 +4,7 @@
 #include "router.hpp"
 #include "server.hpp"
 
-#define ROUTE(path, fn) Routing(path, [](http::request<http::string_body>& request, tcp::socket& socket)fn)
+#define ROUTE(path, fn) Routing(path, [&APP](http::request<http::string_body>& request, tcp::socket& socket)fn)
 
 class BigBoo
 {
@@ -20,6 +20,11 @@ class BigBoo
 
         void Run();
 
+        void AddMix(std::string clientMix, std::string secretKey);
+
+        void PrintStorage();
+   
+        
     private:
         net::io_context m_ioContext{};
         tcp::acceptor m_acceptor;
