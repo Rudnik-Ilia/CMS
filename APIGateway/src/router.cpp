@@ -15,7 +15,7 @@ void Router::AddRoute(const std::string& path, std::function<void(http::request<
     m_routes[path] = std::move(handler);
 }
 
-void Router::Run(tcp::socket& socket)
+void Router::HandleSocket(tcp::socket& socket)
 {    
     beast::flat_buffer buffer;
     http::request<http::string_body> request;

@@ -24,19 +24,6 @@ void Crypto_Request::Process_Authorizing()
         std::cout << gate_key << std::endl;
 
         ResponseTo(http::status::ok, gate_mix);
-
-        while (1)
-        {
-            beast::flat_buffer buffer;
-            m_request = {};
-            http::read(m_socket, buffer, m_request);
-            std::cout << "loop";
-
-            // json data = nlohmann::json::parse(m_request.body());
-            // std::cout << data["role"];
-        }
-
-    
 }
 
 void Crypto_Request::RequestTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path)
