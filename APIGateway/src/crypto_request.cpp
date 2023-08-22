@@ -4,7 +4,7 @@
 
 Crypto_Request::Crypto_Request(tcp::socket& socket, http::request<http::string_body>& request, SRP& srp_module): m_srp(srp_module), m_socket(socket), m_request(request)
 {
-
+    m_data = nlohmann::json::parse(m_request.body());
 }
 
 Crypto_Request::~Crypto_Request()
@@ -12,20 +12,26 @@ Crypto_Request::~Crypto_Request()
     m_socket.close();
 }
 
-void Crypto_Request::Process_Authorizing()
+void Crypto_Request::Process_Mix_Exchange()
 {
-        json data = nlohmann::json::parse(m_request.body());
-        m_client_mix = data["mixture"];
-
-        std::string gate_mix = boost::lexical_cast<std::string>(m_srp.get_mixture());
-
-        big_t mix(m_client_mix);
-        m_srp.set_key_for_encode(mix);
-        std::string gate_key = boost::lexical_cast<std::string>(m_srp.get_key());
-
-        std::cout << gate_key << std::endl;
+    if(m_data.contains("mixture"))
+    {
+        m_client_mix = m_data["mixture"];
+        m_srp.set_mixture();
+        m_srp.set_key_for_encode(big_t (m_client_mix));
         
-        ResponseTo(http::status::ok, gate_mix);
+        ResponseTo(http::status::ok, m_srp.get_mix_asString());
+    }
+    else
+    {
+        std::cerr << "Mix exchange: " << '\n';
+        ResponseTo(http::status::bad_request, "Check the message format!");
+    }
+}
+
+void Crypto_Request::Process_JWT_Obtaing()
+{
+    
 }
 
 void Crypto_Request::RequestTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path)

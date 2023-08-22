@@ -7,7 +7,7 @@ std::string PORT = "8000";
 std::string host_auth = "127.0.0.1";
 std::string port_auth = "8090";
 
-int Define_type_Request(http::request<http::string_body>& request) 
+int Validator(tcp::socket& socket, http::request<http::string_body>& request) 
 {
     switch (request.method()) 
     {
@@ -16,8 +16,19 @@ int Define_type_Request(http::request<http::string_body>& request)
             return GET;
 
         case http::verb::post:
-            std::cout << "Received a POST request" << std::endl;
-            return POST;
+            if(!request.body().empty())
+            {
+                std::cout << "Received a POST request" << std::endl;
+                return POST;
+            }
+            else
+            {
+                std::cout << "Empty body!" << std::endl;
+                Send_Response(socket, request, http::status::bad_request, "Check the body!");
+                socket.shutdown(tcp::socket::shutdown_both);
+                socket.close();
+                return UNSUPPORTED;
+            }
         
         case http::verb::put:
             std::cout << "Received a PUT request" << std::endl;
@@ -29,6 +40,7 @@ int Define_type_Request(http::request<http::string_body>& request)
     
         default:
             std::cout << "Received an unsupported request method" << std::endl;
+            Send_Response(socket, request, http::status::not_found, "Unknown path!");
             return UNSUPPORTED;
     }
 }

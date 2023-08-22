@@ -18,7 +18,8 @@ class Crypto_Request
         void ResponseTo(http::status status, const std::string& body);
         void ForwardTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path);
 
-        void Process_Authorizing();
+        void Process_Mix_Exchange();
+        void Process_JWT_Obtaing();
 
         std::string GetClientMix();
  
@@ -27,5 +28,6 @@ class Crypto_Request
         tcp::socket& m_socket;
         http::request<http::string_body>& m_request;
         std::string m_client_mix{}; 
+        json m_data;
 };
 

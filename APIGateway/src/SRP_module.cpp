@@ -8,9 +8,9 @@ SRP::SRP()
     m_secret = distribution(rng);
 }
 
-big_t SRP::get_mixture() const
+void SRP::set_mixture() 
 {
-    return powm(ROOT, m_secret, PRIME); 
+    m_client_mix = boost::lexical_cast<std::string>(powm(ROOT, m_secret, PRIME));
 }
 
 void SRP::set_key_for_encode(big_t mix)
@@ -33,6 +33,13 @@ std::string SRP::get_key_asString() const
 {
     return m_s_key;
 }
+
+std::string SRP::get_mix_asString() const
+{
+    return m_client_mix;
+}
+
+// *****************************STATIC******************************************
 
 std::string SRP::encrypt_by_key(const std::string &plaintext, const std::string &key)
 {

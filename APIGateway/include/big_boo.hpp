@@ -21,6 +21,7 @@ class BigBoo
         void Run();
 
         void AddMix(std::string clientMix, std::string secretKey);
+        std::string GetKey(std::string clientMix);
 
         void PrintStorage();
    

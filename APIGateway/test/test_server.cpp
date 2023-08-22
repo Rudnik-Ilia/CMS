@@ -16,35 +16,37 @@ int main()
 
     APP.ROUTE("/gateway", 
     {
-        Define_type_Request(request);
+        Validator(socket, request);
         MasterRequest requestSelf(socket, request);
-        requestSelf.ResponseTo(http::status::ok, "I am Big Boo!");
+        requestSelf.ResponseTo(http::status::ok, "I am Big Boo!!!!");
         
         std::this_thread::yield();
     });
 
     APP.ROUTE("/mix", 
     {
-        Define_type_Request(request);
+        Validator(socket, request);
         SRP srp;
 
         Crypto_Request requestSelf(socket, request, srp);
-        requestSelf.Process_Authorizing();
+        requestSelf.Process_Mix_Exchange();
         APP.AddMix(requestSelf.GetClientMix(), srp.get_key_asString());
     });
 
     APP.ROUTE("/signin", 
     {
-        Define_type_Request(request);;
-        MasterRequest reqSelf(socket, request);
-        std::string code = SRP::encrypt_by_key("VADIM", "3546317");
-        std::cout << SRP::decrypt_by_key(code, "3546317") << std::endl;
+        Validator(socket, request);
+        // Crypto_Request reqSelf(socket, request);
+
+        // // APP.GetKey();
+        // std::string code = SRP::encrypt_by_key("VADIM", "3546317");
+        // std::cout << SRP::decrypt_by_key(code, "3546317") << std::endl;
 
     });
 
     APP.ROUTE("/mailagent", 
     {
-        Define_type_Request(request);
+        Validator(socket, request);
         MasterRequest requestSelf(socket, request);
         requestSelf.God_Mode();
         requestSelf.ForwardTo("127.0.0.1", "8008", "rest");
@@ -52,15 +54,14 @@ int main()
 
     APP.ROUTE("/items", 
     {
-        Define_type_Request(request);
+        Validator(socket, request);
         MasterRequest requestSelf(socket, request);
         requestSelf.ForwardTo("127.0.0.1", "8000", "rest");
     });
 
     APP.ROUTE("/listStorage", 
     {
-        Define_type_Request(request);
-
+        Validator(socket, request);
         APP.PrintStorage();
     });
 

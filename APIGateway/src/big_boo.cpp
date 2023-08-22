@@ -52,3 +52,8 @@ void BigBoo::PrintStorage()
         std::cout << item.first << ' ' << item.second << std::endl;
     }
 }
+
+std::string BigBoo::GetKey(std::string clientMix)
+{
+   return m_keyStorage.GetKey(clientMix);
+}

@@ -25,12 +25,14 @@ class SRP
         SRP& operator=(SRP&& other) = delete;
         ~SRP(){};
 
-        big_t get_mixture() const;
+        void set_mixture();
         void set_key_for_encode(big_t mix);
 
         big_t get_secret() const;
         big_t get_key() const;
+
         std::string get_key_asString() const;
+        std::string get_mix_asString() const;
 
         static std::string encrypt_by_key(const std::string &plaintext, const std::string &key);
         static std::string decrypt_by_key(const std::string &cryptotext, const std::string &key);
