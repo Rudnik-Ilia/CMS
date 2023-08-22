@@ -9,7 +9,7 @@ Crypto_Request::Crypto_Request(tcp::socket& socket, http::request<http::string_b
 
 Crypto_Request::~Crypto_Request()
 {
-
+    m_socket.close();
 }
 
 void Crypto_Request::Process_Authorizing()

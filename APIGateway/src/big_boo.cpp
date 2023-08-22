@@ -1,9 +1,11 @@
+#include <boost/asio/ip/address.hpp>
 #include "big_boo.hpp"
 
 
-BigBoo::BigBoo(int port): m_acceptor(m_ioContext, tcp::endpoint(tcp::v4(), port)), m_router(), m_keyStorage()
-{
 
+BigBoo::BigBoo(std::string ip_addr, int port): m_acceptor(m_ioContext, tcp::endpoint(net::ip::make_address(ip_addr), port)), m_router(), m_keyStorage()
+{
+    std::cout << m_acceptor.local_endpoint() << std::endl;
 }
 
 BigBoo::~BigBoo()
@@ -37,7 +39,6 @@ void BigBoo::Run()
         }).detach();
     }
 }
-
 
 void BigBoo::AddMix(std::string clientMix, std::string secretKey)
 {

@@ -10,7 +10,7 @@
 
 int main() 
 {
-    BigBoo APP(9090);
+    BigBoo APP;
 
 // ROUTING***************************************************************************************************
 
@@ -19,23 +19,27 @@ int main()
         Define_type_Request(request);
         MasterRequest requestSelf(socket, request);
         requestSelf.ResponseTo(http::status::ok, "I am Big Boo!");
+        
+        std::this_thread::yield();
     });
 
     APP.ROUTE("/mix", 
     {
         Define_type_Request(request);
-
         SRP srp;
 
         Crypto_Request requestSelf(socket, request, srp);
         requestSelf.Process_Authorizing();
-
         APP.AddMix(requestSelf.GetClientMix(), srp.get_key_asString());
     });
 
     APP.ROUTE("/signin", 
     {
-        Define_type_Request(request);
+        Define_type_Request(request);;
+        MasterRequest reqSelf(socket, request);
+        std::string code = SRP::encrypt_by_key("VADIM", "3546317");
+        std::cout << SRP::decrypt_by_key(code, "3546317") << std::endl;
+
     });
 
     APP.ROUTE("/mailagent", 

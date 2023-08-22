@@ -11,7 +11,6 @@ MasterRequest::MasterRequest(tcp::socket& socket, http::request<http::string_bod
 
 MasterRequest::~MasterRequest()
 {
-    m_socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
     m_socket.close();
 }
 

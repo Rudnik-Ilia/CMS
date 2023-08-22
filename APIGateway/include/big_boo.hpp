@@ -9,7 +9,7 @@
 class BigBoo
 {
     public:
-        BigBoo(int port);
+        BigBoo(std::string ip_addr = "0.0.0.0", int port = 9090);
         BigBoo(const BigBoo& other) = delete;
         BigBoo& operator=(const BigBoo& other) = delete;
         BigBoo(BigBoo&& other) = delete;

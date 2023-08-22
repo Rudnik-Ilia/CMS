@@ -21,6 +21,8 @@ void Router::HandleSocket(tcp::socket& socket)
     http::request<http::string_body> request;
     http::read(socket, buffer, request);
 
+    
+
     auto it = m_routes.find(request.target().to_string());
 
     if (it != m_routes.end()) 
@@ -31,4 +33,5 @@ void Router::HandleSocket(tcp::socket& socket)
     {
         Send_Response(socket, request, http::status::not_found, "Unknown path!");
     }
+    
 }
