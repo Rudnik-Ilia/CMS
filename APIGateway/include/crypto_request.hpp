@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../include/irequest.hpp"
 #include "../include/SRP_module.hpp"
+#include "JSONbuilder.hpp"
 
 
 class Crypto_Request
@@ -14,7 +14,7 @@ class Crypto_Request
         Crypto_Request& operator=(Crypto_Request&& other) = delete;
         ~Crypto_Request();
 
-        void RequestTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path);
+        void RequestTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path, const std::string body);
         void ResponseTo(http::status status, const std::string& body);
         void ForwardTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path);
 
@@ -29,5 +29,11 @@ class Crypto_Request
         http::request<http::string_body>& m_request;
         std::string m_client_mix{}; 
         json m_data;
+        JSONbuilder m_jsonBuilder;
+
+        // for getting JWT request to singin
+        std::string m_role{};
+        std::string m_login{};
+        std::string m_password{};
 };
 

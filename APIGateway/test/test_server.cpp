@@ -7,16 +7,15 @@
 #include "key_storage.hpp"
 #include "big_boo.hpp"
 #include "logger.hpp"
+// #include "singleton.hpp"
+
+
 
 
 int main() 
 {
     BigBoo APP;
-
-    Logger logger("log.txt");
-
-    logger.LogToConsole("Logging started.");
-    logger.LogToFile("Logging started.");
+   
 
 // ROUTING***************************************************************************************************
 
@@ -33,7 +32,6 @@ int main()
     {
         Validator(socket, request);
         SRP srp;
-
         Crypto_Request requestSelf(socket, request, srp);
         requestSelf.Process_Mix_Exchange();
         APP.AddMix(requestSelf.GetClientMix(), srp.get_key_asString());
@@ -42,12 +40,13 @@ int main()
     APP.ROUTE("/signin", 
     {
         Validator(socket, request);
-        // Crypto_Request reqSelf(socket, request);
-
-        // // APP.GetKey();
+        SRP srp;
+        Crypto_Request reqSelf(socket, request, srp);
+        reqSelf.Process_JWT_Obtaing();
+        reqSelf.ResponseTo(http::status::ok, "I get it");
+        // APP.GetKey(reqSelf..GetClientMix());
         // std::string code = SRP::encrypt_by_key("VADIM", "3546317");
         // std::cout << SRP::decrypt_by_key(code, "3546317") << std::endl;
-
     });
 
     APP.ROUTE("/mailagent", 
@@ -76,97 +75,3 @@ int main()
     return 0;
 }
 
-// OLDLOOP***********************************************************************************
-
-    // while(true)
-    // {
-    //     try
-    //     {
-    //         tcp::socket socket(ioContext);
-    //         acceptor.accept(socket);
-
-    //         std::thread(&Handle_Connection, std::move(socket)).detach();
-    //     }
-    //     catch(const std::exception& e)
-    //     {
-    //         std::cerr << "Main Loop: " << e.what() << '\n';
-    //     }
-    // }
-
-//OLD SERVER***************************************************************************************
-    // net::io_context ioContext;
-    // tcp::acceptor acceptor(ioContext, tcp::endpoint(tcp::v4(), 9090));
-   // Router router;
-   // ROUTING***************************************************************************************************
-
-
-
-    //    APP.Routing("/m", [](http::request<http::string_body>& request, tcp::socket& socket)
-    // {
-    //     Define_type_Request(request);
-
-    //     SRP srp;
-    //     Crypto_Request requestSelf(socket, request, srp);
-    //     requestSelf.Process_Authorizing();
-
-    // });
-     // router.AddRoute("/gateway", [](http::request<http::string_body>& request, tcp::socket& socket)
-    // {
-    //     Define_type_Request(request);
-
-    //     MasterRequest requestSelf(socket, request);
-    //     requestSelf.ResponseTo(http::status::ok, "I am Big Boo!");
-    // });
-
-    // router.AddRoute("/mix", [](http::request<http::string_body>& request, tcp::socket& socket)
-    // {
-    //     Define_type_Request(request);
-
-    //     SRP srp;
-    //     Crypto_Request requestSelf(socket, request, srp);
-    //     requestSelf.Process_Authorizing();
-    // });
-
-    // router.AddRoute("/signin", [](http::request<http::string_body>& request, tcp::socket& socket)
-    // {
-    //     Define_type_Request(request);
-    // });
-
-    // router.AddRoute("/mailagent", [](http::request<http::string_body>& request, tcp::socket& socket)
-    // {
-    //     Define_type_Request(request);
-
-    //     MasterRequest requestSelf(socket, request);
-    //     requestSelf.God_Mode();
-    //     requestSelf.ForwardTo("127.0.0.1", "8008", "rest");
-    // });
-
-    // router.AddRoute("/items", [](http::request<http::string_body>& request, tcp::socket& socket)
-    // {
-    //     Define_type_Request(request);
-
-    //     MasterRequest requestSelf(socket, request);
-    //     requestSelf.ForwardTo("127.0.0.1", "8000", "rest");
-    // });
-
-// MAINLOOP**************************************************************************************************
-    // while(true)
-    // {
-    //     tcp::socket socket(ioContext);
-    //     acceptor.accept(socket);
-
-    //     std::thread([socket = std::move(socket), &router]() mutable
-    //     {
-    //         try
-    //         {
-    //             router.HandleSocket(socket);
-    //         }
-    //         catch(const std::exception& e)
-    //         {
-    //             std::cerr << "Main Loop: " << e.what() << '\n';
-    //         }
-
-    //     }).detach();
-    // }
-
-    // acceptor.close();

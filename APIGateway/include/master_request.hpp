@@ -3,7 +3,7 @@
 #include "../include/server.hpp"
 #include "../include/irequest.hpp"
 
-class MasterRequest : public IRequest
+class MasterRequest
 {
     public:
         explicit MasterRequest(tcp::socket& socket, http::request<http::string_body>& request);
@@ -13,10 +13,10 @@ class MasterRequest : public IRequest
         MasterRequest& operator=(MasterRequest&& other) = delete;
         ~MasterRequest();
 
-        void RequestTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path) override;
+        void RequestTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path);
 
-        void ResponseTo(http::status status, const std::string& body) override;
-        void ForwardTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path) override;
+        void ResponseTo(http::status status, const std::string& body);
+        void ForwardTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path);
         void Get_Token();
 
         int Check_Token(std::string token);

@@ -6,6 +6,11 @@
 #include <ctime>
 #include <iomanip>
 
+#include "singleton.hpp"
+
+#define LOGFILE ("log.txt")
+#define CONSOLE_LOG(message) Singleton<Logger>::GetInstance(LOGFILE)->LogToConsole(message)
+
 class Logger final
 {
     public:

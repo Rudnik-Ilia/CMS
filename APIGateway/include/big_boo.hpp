@@ -3,6 +3,7 @@
 #include "key_storage.hpp"
 #include "router.hpp"
 #include "server.hpp"
+#include "logger.hpp"
 
 #define ROUTE(path, fn) Routing(path, [&APP](http::request<http::string_body>& request, tcp::socket& socket)fn)
 
@@ -31,5 +32,6 @@ class BigBoo
         tcp::acceptor m_acceptor;
         Router m_router;
         KeyStorage m_keyStorage;  
+        Logger m_logger;
 };
 
