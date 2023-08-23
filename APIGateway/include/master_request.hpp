@@ -22,7 +22,7 @@ class MasterRequest : public IRequest
         int Check_Token(std::string token);
 
         bool Authorized();
-
+// TEMPORALY FOR TESTING
         void God_Mode()
         {
             m_authorized = true;

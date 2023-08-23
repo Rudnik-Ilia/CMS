@@ -2,9 +2,10 @@ cmake_minimum_required(VERSION 3.13)
 
 set(PROJECT_NAME server)
 
-# set(CMAKE_CXX_FLAGS "-std=c++14 -lpthread")
+
 
 project(${PROJECT_NAME})
+
 
 include_directories(include)
 
@@ -12,7 +13,7 @@ include_directories(include)
 # set(HEADERS include/*.hpp)
 
 file(GLOB SOURCES "src/*.cpp")
-# file(GLOB HEADERS "include/*.hpp")
+
 
 set(TEST_SOURCE "test/test_server.cpp")
 list(APPEND SOURCES ${TEST_SOURCE})

@@ -6,11 +6,17 @@
 #include "crypto_request.hpp"
 #include "key_storage.hpp"
 #include "big_boo.hpp"
+#include "logger.hpp"
 
 
 int main() 
 {
     BigBoo APP;
+
+    Logger logger("log.txt");
+
+    logger.LogToConsole("Logging started.");
+    logger.LogToFile("Logging started.");
 
 // ROUTING***************************************************************************************************
 
