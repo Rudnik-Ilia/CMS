@@ -14,12 +14,12 @@ class Crypto_Request
         Crypto_Request& operator=(Crypto_Request&& other) = delete;
         ~Crypto_Request();
 
-        void RequestTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path, const std::string body);
-        void ResponseTo(http::status status, const std::string& body);
-        void ForwardTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path);
+        // void RequestTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path, const std::string body);
+        void ResponseBack(http::status status, const std::string& body);
+        void ForwardTo(const std::string& HOST, const std::string& PORT, const std::string body);
 
         void Process_Mix_Exchange();
-        void Process_JWT_Obtaing();
+        void Process_JWT_Obtaing(std::string key);
 
         std::string GetClientMix();
  

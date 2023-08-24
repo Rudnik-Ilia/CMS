@@ -1,6 +1,6 @@
 #pragma once
 
-#include "server.hpp"
+#include "helper_functions.hpp"
 
 class JSONbuilder
 {

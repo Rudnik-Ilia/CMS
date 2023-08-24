@@ -1,5 +1,5 @@
 #include "../include/router.hpp"
-#include "../include/server.hpp"
+#include "../include/helper_functions.hpp"
 
 Router::Router()
 {
@@ -20,8 +20,6 @@ void Router::HandleSocket(tcp::socket& socket)
     beast::flat_buffer buffer;
     http::request<http::string_body> request;
     http::read(socket, buffer, request);
-
-    
 
     auto it = m_routes.find(request.target().to_string());
 

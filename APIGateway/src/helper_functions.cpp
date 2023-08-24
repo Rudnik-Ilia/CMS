@@ -1,5 +1,6 @@
-#include "server.hpp"
+#include "helper_functions.hpp"
 #include "SRP_module.hpp"
+#include "logger.hpp"
 
 std::string HOST = "127.0.0.1";
 std::string PORT = "8000";
@@ -7,18 +8,18 @@ std::string PORT = "8000";
 std::string host_auth = "127.0.0.1";
 std::string port_auth = "8090";
 
-int Validator(tcp::socket& socket, http::request<http::string_body>& request) 
+int Validator_Func(tcp::socket& socket, http::request<http::string_body>& request) 
 {
     switch (request.method()) 
     {
         case http::verb::get:
-            std::cout << "Received a GET request" << std::endl;
+            CONSOLE_LOG("GET request from: " + request.target().to_string());
             return GET;
 
         case http::verb::post:
             if(!request.body().empty())
             {
-                std::cout << "Received a POST request" << std::endl;
+                CONSOLE_LOG("POST request from: " + request.target().to_string());
                 return POST;
             }
             else

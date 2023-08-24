@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../include/server.hpp"
-#include "../include/irequest.hpp"
+#include "../include/helper_functions.hpp"
 
 class MasterRequest
 {
@@ -13,15 +12,15 @@ class MasterRequest
         MasterRequest& operator=(MasterRequest&& other) = delete;
         ~MasterRequest();
 
-        void RequestTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path);
+        // void RequestTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path);
 
-        void ResponseTo(http::status status, const std::string& body);
-        void ForwardTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path);
+        void ResponseBack(http::status status, const std::string& body);
+        void ForwardTo(const std::string& HOST, const std::string& PORT, const std::string& body);
+
         void Get_Token();
-
         int Check_Token(std::string token);
-
         bool Authorized();
+
 // TEMPORALY FOR TESTING
         void God_Mode()
         {

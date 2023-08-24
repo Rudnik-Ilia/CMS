@@ -14,7 +14,7 @@ MasterRequest::~MasterRequest()
     m_socket.close();
 }
 
-void MasterRequest::ForwardTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path)
+void MasterRequest::ForwardTo(const std::string& HOST, const std::string& PORT, const std::string& body)
 {
     if(m_authorized)
     {
@@ -41,20 +41,18 @@ void MasterRequest::ForwardTo(const std::string& HOST, const std::string& PORT, 
     }
     else
     {
-        ResponseTo(http::status::unauthorized, "You need to have a token!");
+        ResponseBack(http::status::unauthorized, "You need to have a token!");
     }
 }
 
-void MasterRequest::ResponseTo(http::status status, const std::string& body)
+void MasterRequest::ResponseBack(http::status status, const std::string& body)
 {
     http::response<http::string_body> response{};
-
     response.result(status);
     response.version(m_request.version());
     response.set(http::field::server, "Boost.Beast Web Server");
     response.set(http::field::content_type, "text/plain");
     response.body() = body;
-
     response.prepare_payload();
     http::write(m_socket, response); 
 }
@@ -107,30 +105,31 @@ void MasterRequest::Get_Token()
         }
     }
 }
-void MasterRequest::RequestTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path)
-{
-    // tcp::endpoint end_point(net::ip::make_address(HOST), std::stoi(PORT));
-    // m_socket.connect(end_point);
-
-    // http::request<http::string_body> request(http::verb::post, "/check", 11);
-    // request.set(http::field::content_type, "application/json"); 
-    // request.set(http::field::host, HOST + ":" + PORT);
-    // request.set(http::field::user_agent, "Boost.Beast");
-
-    // const std::string requestBody = R"({"token": ")" + m_token + R"("})";
-    // request.body() = requestBody;
-
-    // request.prepare_payload();
-    // http::write(socket, request);
-
-    // beast::flat_buffer buffer;
-    // http::response<http::string_body> response;
-    // http::read(socket, buffer, response);
-
-    // std::cout << response.body() << std::endl;
-}
 
 bool MasterRequest::Authorized()
 {
     return m_authorized;
 }
+
+// void MasterRequest::RequestTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path)
+// {
+//     // tcp::endpoint end_point(net::ip::make_address(HOST), std::stoi(PORT));
+//     // m_socket.connect(end_point);
+
+//     // http::request<http::string_body> request(http::verb::post, "/check", 11);
+//     // request.set(http::field::content_type, "application/json"); 
+//     // request.set(http::field::host, HOST + ":" + PORT);
+//     // request.set(http::field::user_agent, "Boost.Beast");
+
+//     // const std::string requestBody = R"({"token": ")" + m_token + R"("})";
+//     // request.body() = requestBody;
+
+//     // request.prepare_payload();
+//     // http::write(socket, request);
+
+//     // beast::flat_buffer buffer;
+//     // http::response<http::string_body> response;
+//     // http::read(socket, buffer, response);
+
+//     // std::cout << response.body() << std::endl;
+// }

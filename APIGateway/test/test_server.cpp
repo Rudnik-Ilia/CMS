@@ -1,14 +1,14 @@
-#include "server.hpp"
+#define RELEASE
+
+#include "helper_functions.hpp"
 #include "router.hpp"
 #include "master_request.hpp"
 #include "SRP_module.hpp"
-#include "irequest.hpp"
 #include "crypto_request.hpp"
 #include "key_storage.hpp"
 #include "big_boo.hpp"
 #include "logger.hpp"
-// #include "singleton.hpp"
-
+#include "request_draft.hpp"
 
 
 
@@ -16,42 +16,39 @@ int main()
 {
     BigBoo APP;
    
-
 // ROUTING***************************************************************************************************
 
-    APP.ROUTE("/gateway", 
+    APP.ROUTE("/", 
     {
-        Validator(socket, request);
+        // Validator_Func(socket, request);
+        Drafter drafter;
+        drafter.GET();
         MasterRequest requestSelf(socket, request);
-        requestSelf.ResponseTo(http::status::ok, "I am Big Boo!!!!");
-        
-        std::this_thread::yield();
+        requestSelf.ResponseBack(http::status::ok, "I am Big Boo!!!!");
     });
 
     APP.ROUTE("/mix", 
     {
-        Validator(socket, request);
+        Validator_Func(socket, request);
         SRP srp;
         Crypto_Request requestSelf(socket, request, srp);
         requestSelf.Process_Mix_Exchange();
         APP.AddMix(requestSelf.GetClientMix(), srp.get_key_asString());
+
     });
 
     APP.ROUTE("/signin", 
     {
-        Validator(socket, request);
+        Validator_Func(socket, request);
         SRP srp;
         Crypto_Request reqSelf(socket, request, srp);
-        reqSelf.Process_JWT_Obtaing();
-        reqSelf.ResponseTo(http::status::ok, "I get it");
-        // APP.GetKey(reqSelf..GetClientMix());
-        // std::string code = SRP::encrypt_by_key("VADIM", "3546317");
-        // std::cout << SRP::decrypt_by_key(code, "3546317") << std::endl;
+        reqSelf.Process_JWT_Obtaing(APP.GetKey(reqSelf.GetClientMix()));
+
     });
 
     APP.ROUTE("/mailagent", 
     {
-        Validator(socket, request);
+        Validator_Func(socket, request);
         MasterRequest requestSelf(socket, request);
         requestSelf.God_Mode();
         requestSelf.ForwardTo("127.0.0.1", "8008", "rest");
@@ -59,14 +56,15 @@ int main()
 
     APP.ROUTE("/items", 
     {
-        Validator(socket, request);
+        Validator_Func(socket, request);
         MasterRequest requestSelf(socket, request);
         requestSelf.ForwardTo("127.0.0.1", "8000", "rest");
     });
 
+// GOD ACTIONS*************************************************
     APP.ROUTE("/listStorage", 
     {
-        Validator(socket, request);
+        Validator_Func(socket, request);
         APP.PrintStorage();
     });
 

@@ -2,7 +2,7 @@
 
 #include "key_storage.hpp"
 #include "router.hpp"
-#include "server.hpp"
+#include "helper_functions.hpp"
 #include "logger.hpp"
 
 #define ROUTE(path, fn) Routing(path, [&APP](http::request<http::string_body>& request, tcp::socket& socket)fn)
@@ -22,8 +22,11 @@ class BigBoo
         void Run();
 
         void AddMix(std::string clientMix, std::string secretKey);
-        std::string GetKey(std::string clientMix);
 
+        std::string GetKey(std::string clientMix);
+        void RemoveKey(std::string clientMix);
+
+// TEMPORALY******
         void PrintStorage();
    
         

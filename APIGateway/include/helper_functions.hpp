@@ -28,7 +28,7 @@ enum REQUEST_TYPE
     UNSUPPORTED
 };
 
-int Validator(tcp::socket& socket, http::request<http::string_body>& request);
+int Validator_Func(tcp::socket& socket, http::request<http::string_body>& request);
 
 void Send_Response(tcp::socket& socket, http::request<http::string_body>& request, http::status status, const std::string& body);
 

@@ -1,4 +1,5 @@
 #include "key_storage.hpp"
+#include "logger.hpp"
 
 
 KeyStorage::KeyStorage(): m_storage(){}
@@ -29,7 +30,7 @@ void KeyStorage::RemoveKey(std::string client_mix)
 std::string KeyStorage::GetKey(std::string client_mix)
 {
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
+        std::lock_guard<std::mutex> lock(m_mutex); 
         return m_storage.at(client_mix);
     }
 }
