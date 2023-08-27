@@ -14,23 +14,29 @@ void KeyStorage::AddKey(std::string client_mix, std::string crypto_key)
     }
 }
 
-void KeyStorage::RemoveKey(std::string client_mix)
+// void KeyStorage::RemoveKey(std::string client_mix)
+// {
+//     {
+//         std::lock_guard<std::mutex> lock(m_mutex);
+
+//         auto item = m_storage.find(client_mix);
+//         if(item != m_storage.end())
+//         {
+//             m_storage.erase(client_mix);
+//         }
+//     }
+// }
+
+std::string KeyStorage::GetKey(const std::string client_mix)
 {
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
-
+        std::lock_guard<std::mutex> lock(m_mutex); 
         auto item = m_storage.find(client_mix);
         if(item != m_storage.end())
         {
             m_storage.erase(client_mix);
+            return item->second;
         }
-    }
-}
-
-std::string KeyStorage::GetKey(std::string client_mix)
-{
-    {
-        std::lock_guard<std::mutex> lock(m_mutex); 
-        return m_storage.at(client_mix);
+        return "";
     }
 }

@@ -47,19 +47,10 @@ void BigBoo::AddMix(std::string clientMix, std::string secretKey)
 }
 
 
-std::string BigBoo::GetKey(std::string clientMix)
+std::string BigBoo::GetKey(const std::string clientMix)
 {
-    std::string key = m_keyStorage.GetKey(clientMix);
-    RemoveKey(clientMix);
-    return key;
+    return  m_keyStorage.GetKey(clientMix);
 }
-
-void BigBoo::RemoveKey(std::string clientMix)
-{
-   return m_keyStorage.RemoveKey(clientMix);
-}
-
-
 
 
 // TEMPORALY************************************************

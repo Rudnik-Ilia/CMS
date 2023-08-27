@@ -6,7 +6,7 @@ class BaseRequest
 {
     public:
         explicit BaseRequest(tcp::socket& socket, http::request<http::string_body>& request);
-        BaseRequest(const BaseRequest& other);
+        BaseRequest(const BaseRequest& other) = default;
         BaseRequest& operator=(const BaseRequest& other) = delete;
         BaseRequest(BaseRequest&& other) = delete;
         BaseRequest& operator=(BaseRequest&& other) = delete;

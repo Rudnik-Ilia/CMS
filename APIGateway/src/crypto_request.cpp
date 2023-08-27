@@ -30,19 +30,22 @@ void Crypto_Request::Process_Mix_Exchange()
     }
 }
 
-void Crypto_Request::Process_JWT_Obtaing(std::string key)
+void Crypto_Request::Process_JWT_Obtaing(const std::string key)
 {
     // m_client_mix = m_data["mixture"];
+    if(key != "")
+    {
+        m_login = SRP::decrypt_by_key(m_data["login"], key);
+        m_password = SRP::decrypt_by_key(m_data["password"], key);
+        std::string res = m_jsonBuilder.AddKeyValue("login", m_login).AddKeyValue("password", m_password).GetString();
+        ForwardTo("127.0.0.1", "8090",res);
+        CONSOLE_LOG("Decrypted data: " + res);
+    }
+    else
+    {
+        ResponseBack(http::status::bad_request, "Your mix was alredy used!");
+    }
 
-    m_login = SRP::decrypt_by_key(m_data["login"], key);
-    m_password = SRP::decrypt_by_key(m_data["password"], key);
-    m_role = SRP::decrypt_by_key(m_data["role"], key);
-
-    std::string res = m_jsonBuilder.AddKeyValue("login", m_login).AddKeyValue("password", m_password).GetString();
-    
-    ForwardTo("127.0.0.1", "8090",res);
-
-    CONSOLE_LOG("Decrypted data: " + res);
 }
 
 

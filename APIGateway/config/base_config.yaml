@@ -1,0 +1,23 @@
+gateway:
+  server:
+    address: 0.0.0.0
+    port: 9090
+
+  services:
+    mailagent:
+      address: 127.0.0.1
+      port: 8008
+
+    authservice:
+      address: 127.0.0.1
+      port: 8090
+
+    dbmanager:
+      address: 127.0.0.1
+      port: 8000
+
+  logging:
+    level: debug
+    filename: log.txt
+
+

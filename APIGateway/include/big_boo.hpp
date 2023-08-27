@@ -23,8 +23,8 @@ class BigBoo
 
         void AddMix(std::string clientMix, std::string secretKey);
 
-        std::string GetKey(std::string clientMix);
-        void RemoveKey(std::string clientMix);
+        std::string GetKey(const std::string clientMix);
+        // void RemoveKey(std::string clientMix);
 
 // TEMPORALY******
         void PrintStorage();

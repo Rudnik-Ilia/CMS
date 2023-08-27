@@ -27,5 +27,5 @@ class Router
         void AddRoute(const std::string& path, std::function<void(http::request<http::string_body>&, tcp::socket&)> handler);
 
     private:
-        std::map<std::string, std::function<void(http::request<http::string_body>&, tcp::socket&)>> m_routes{};
+        std::map<const std::string, std::function<void(http::request<http::string_body>&, tcp::socket&)>> m_routes{};
 };

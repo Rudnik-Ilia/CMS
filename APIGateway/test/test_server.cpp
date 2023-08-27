@@ -1,5 +1,7 @@
 #define RELEASE
 
+#include <yaml-cpp/yaml.h>
+
 #include "helper_functions.hpp"
 #include "router.hpp"
 #include "master_request.hpp"
@@ -8,21 +10,29 @@
 #include "key_storage.hpp"
 #include "big_boo.hpp"
 #include "logger.hpp"
-#include "request_draft.hpp"
+#include "drafter.hpp"
+#include "validator.hpp"
 
 
 
 int main() 
 {
+    YAML::Node config = YAML::LoadFile("../config/base_config.yaml");
     BigBoo APP;
    
 // ROUTING***************************************************************************************************
 
     APP.ROUTE("/", 
     {
-        // Validator_Func(socket, request);
-        Drafter drafter;
-        drafter.GET();
+        Drafter draft;
+        // draft.POST().HAS_BODY();
+        CONSOLE_LOG(" Draft: " + draft.PrintSet());
+
+        CONSOLE_LOG(" Sample: " + Validator::PrintSet());
+        Validator::Check(socket, request, draft.GET().HAS_BODY().PrintSetAsDigit());
+
+        CONSOLE_LOG(" Sample: " + Validator::PrintSet());
+
         MasterRequest requestSelf(socket, request);
         requestSelf.ResponseBack(http::status::ok, "I am Big Boo!!!!");
     });
@@ -34,7 +44,6 @@ int main()
         Crypto_Request requestSelf(socket, request, srp);
         requestSelf.Process_Mix_Exchange();
         APP.AddMix(requestSelf.GetClientMix(), srp.get_key_asString());
-
     });
 
     APP.ROUTE("/signin", 
@@ -43,7 +52,14 @@ int main()
         SRP srp;
         Crypto_Request reqSelf(socket, request, srp);
         reqSelf.Process_JWT_Obtaing(APP.GetKey(reqSelf.GetClientMix()));
+    });
 
+    APP.ROUTE("/dbmanager", 
+    {
+        Validator_Func(socket, request);
+        MasterRequest requestSelf(socket, request);
+        requestSelf.God_Mode();
+        requestSelf.ForwardTo("127.0.0.1", "8000", "rest");
     });
 
     APP.ROUTE("/mailagent", 
@@ -52,6 +68,14 @@ int main()
         MasterRequest requestSelf(socket, request);
         requestSelf.God_Mode();
         requestSelf.ForwardTo("127.0.0.1", "8008", "rest");
+    });
+
+    APP.ROUTE("/authservice", 
+    {
+        Validator_Func(socket, request);
+        MasterRequest requestSelf(socket, request);
+        requestSelf.God_Mode();
+        requestSelf.ForwardTo("127.0.0.1", "8090", "rest");
     });
 
     APP.ROUTE("/items", 

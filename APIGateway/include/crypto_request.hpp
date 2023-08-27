@@ -19,7 +19,7 @@ class Crypto_Request
         void ForwardTo(const std::string& HOST, const std::string& PORT, const std::string body);
 
         void Process_Mix_Exchange();
-        void Process_JWT_Obtaing(std::string key);
+        void Process_JWT_Obtaing(const std::string key);
 
         std::string GetClientMix();
  

@@ -1,11 +1,11 @@
 #pragma once
 
-#include <unordered_map>
+#include <map>
 #include<mutex>
 
 #include "SRP_module.hpp"
 
-using Iterator = std::unordered_map<std::string, std::string>::iterator; 
+using Iterator = std::map<std::string, std::string>::iterator; 
 
 class KeyStorage
 {
@@ -18,9 +18,9 @@ class KeyStorage
         ~KeyStorage();
 
         void AddKey(std::string client_mix, std::string crypto_key);
-        void RemoveKey(std::string client_mix);
+        // void RemoveKey(std::string client_mix);
 
-        std::string GetKey(std::string client_mix);
+        std::string GetKey(const std::string client_mix);
 
         Iterator begin()
         {
@@ -33,7 +33,7 @@ class KeyStorage
         }
 
     private:
-        std::unordered_map<std::string, std::string> m_storage;
+        std::map<std::string, std::string> m_storage;
         std::mutex m_mutex{};
 
 };
