@@ -1,25 +1,24 @@
-FROM ubuntu:latest
-
+FROM ubuntu:20.04
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
-    apt-get install -y cmake g++ libboost-all-dev && \
+    apt-get install -y cmake g++ libboost-all-dev nlohmann-json3-dev && \
     apt-get clean
 
-RUN ls /usr/include/boost
-RUN ls /usr/lib/x86_64-linux-gnu | grep boost
+# RUN git clone https://github.com/nlohmann/json.git /app/include/nlohmann
 
 WORKDIR /app
 
-COPY CMakeLists.txt /app/
-COPY include /app/include
 COPY src /app/src
 COPY test /app/test
+COPY include /app/include
+COPY CMakeLists.txt /app
 
 EXPOSE 9090
-RUN apt-get update && apt-get install -y libboost-all-dev
 
 RUN mkdir build && \
     cd build && \
     cmake .. && \
     make
 
-CMD ["./build/your_program"]
+CMD ["./build/server"]
+

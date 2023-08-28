@@ -1,6 +1,6 @@
 #define RELEASE
 
-#include <yaml-cpp/yaml.h>
+// #include <yaml-cpp/yaml.h>
 
 #include "helper_functions.hpp"
 #include "router.hpp"
@@ -17,7 +17,7 @@
 
 int main() 
 {
-    YAML::Node config = YAML::LoadFile("../config/base_config.yaml");
+    // YAML::Node config = YAML::LoadFile("../config/base_config.yaml");
     BigBoo APP;
    
 // ROUTING***************************************************************************************************
@@ -88,6 +88,7 @@ int main()
     });
 
 // START SERVER******************************************************************
+
     APP.Run();
 
     return 0;

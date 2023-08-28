@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../include/helper_functions.hpp"
+#include "helper_functions.hpp"
 
 class MasterRequest
 {
