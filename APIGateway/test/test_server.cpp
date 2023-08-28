@@ -25,21 +25,15 @@ int main()
     APP.ROUTE("/", 
     {
         Drafter draft;
-        // draft.POST().HAS_BODY();
-        CONSOLE_LOG(" Draft: " + draft.PrintSet());
-
-        CONSOLE_LOG(" Sample: " + Validator::PrintSet());
-        Validator::Check(socket, request, draft.GET().HAS_BODY().PrintSetAsDigit());
-
-        CONSOLE_LOG(" Sample: " + Validator::PrintSet());
-
+        std::cout << Validator::Check(request, draft.GET().HAS_BODY().dot()) << std::endl;
+ 
         MasterRequest requestSelf(socket, request);
         requestSelf.ResponseBack(http::status::ok, "I am Big Boo!!!!");
     });
 
     APP.ROUTE("/mix", 
     {
-        Validator_Func(socket, request);
+        TypeRequest(socket, request);
         SRP srp;
         Crypto_Request requestSelf(socket, request, srp);
         requestSelf.Process_Mix_Exchange();
@@ -48,7 +42,7 @@ int main()
 
     APP.ROUTE("/signin", 
     {
-        Validator_Func(socket, request);
+        TypeRequest(socket, request);
         SRP srp;
         Crypto_Request reqSelf(socket, request, srp);
         reqSelf.Process_JWT_Obtaing(APP.GetKey(reqSelf.GetClientMix()));
@@ -56,7 +50,7 @@ int main()
 
     APP.ROUTE("/dbmanager", 
     {
-        Validator_Func(socket, request);
+        TypeRequest(socket, request);
         MasterRequest requestSelf(socket, request);
         requestSelf.God_Mode();
         requestSelf.ForwardTo("127.0.0.1", "8000", "rest");
@@ -64,7 +58,7 @@ int main()
 
     APP.ROUTE("/mailagent", 
     {
-        Validator_Func(socket, request);
+        TypeRequest(socket, request);
         MasterRequest requestSelf(socket, request);
         requestSelf.God_Mode();
         requestSelf.ForwardTo("127.0.0.1", "8008", "rest");
@@ -72,7 +66,7 @@ int main()
 
     APP.ROUTE("/authservice", 
     {
-        Validator_Func(socket, request);
+        TypeRequest(socket, request);
         MasterRequest requestSelf(socket, request);
         requestSelf.God_Mode();
         requestSelf.ForwardTo("127.0.0.1", "8090", "rest");
@@ -80,18 +74,20 @@ int main()
 
     APP.ROUTE("/items", 
     {
-        Validator_Func(socket, request);
+        TypeRequest(socket, request);
         MasterRequest requestSelf(socket, request);
         requestSelf.ForwardTo("127.0.0.1", "8000", "rest");
     });
 
-// GOD ACTIONS*************************************************
+// GOD's ACTIONS****************************************************************
+
     APP.ROUTE("/listStorage", 
     {
-        Validator_Func(socket, request);
+        TypeRequest(socket, request);
         APP.PrintStorage();
     });
 
+// START SERVER******************************************************************
     APP.Run();
 
     return 0;

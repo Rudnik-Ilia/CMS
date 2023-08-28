@@ -42,7 +42,7 @@ class Drafter
 // TEMPORALY FOR TEST ***********************************************8
         std::string PrintSet(); 
 
-        u_int8_t PrintSetAsDigit();
+        u_int8_t dot();
 
         inline void SetOff()
         {

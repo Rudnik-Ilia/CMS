@@ -13,7 +13,7 @@ std::string Drafter::PrintSet()
     }
     return result;
 }
-u_int8_t Drafter::PrintSetAsDigit()
+u_int8_t Drafter::dot()
 {
     return m_bit_set;
 }

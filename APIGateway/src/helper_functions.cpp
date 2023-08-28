@@ -8,7 +8,7 @@ std::string PORT = "8000";
 std::string host_auth = "127.0.0.1";
 std::string port_auth = "8090";
 
-int Validator_Func(tcp::socket& socket, http::request<http::string_body>& request) 
+int TypeRequest(tcp::socket& socket, http::request<http::string_body>& request) 
 {
     switch (request.method()) 
     {
@@ -30,7 +30,6 @@ int Validator_Func(tcp::socket& socket, http::request<http::string_body>& reques
                 socket.close();
                 return UNSUPPORTED;
             }
-        
         case http::verb::put:
             std::cout << "Received a PUT request" << std::endl;
             return PUT;

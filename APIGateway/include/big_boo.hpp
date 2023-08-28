@@ -24,13 +24,13 @@ class BigBoo
         void AddMix(std::string clientMix, std::string secretKey);
 
         std::string GetKey(const std::string clientMix);
-        // void RemoveKey(std::string clientMix);
+
 
 // TEMPORALY******
         void PrintStorage();
-   
-        
+
     private:
+
         net::io_context m_ioContext{};
         tcp::acceptor m_acceptor;
         Router m_router;
