@@ -15,8 +15,14 @@ class CustomEncoder(json.JSONEncoder):
             return {"worker": {"id:": obj.id, "name": obj.name, "surname": obj.surname, "salary": obj.salary}}
 
 
+@app.route('/dbmanager', methods=['GET'])
+def get_check():
+    if request.method == "GET":
+        return make_response(jsonify("Im DB manager!"), 200)
+
+
 @app.route('/items/login', methods=['POST'])
-def login(g):
+def login():
     if request.method == "POST":
         if check_hash(request.json['login'], request.json['password']):
             session["token"] = APP_TOK
@@ -39,12 +45,6 @@ def get_all_records():
         return make_response(jsonify(list_of_users), 200)
     else:
         abort(401)
-
-
-@app.route('/items', methods=['GET'])
-def get_():
-    if request.method == "GET":
-        return make_response(jsonify("Everythink works"), 200)
 
 
 @app.route('/items/<int:id>', methods=['GET'])

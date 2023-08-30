@@ -1,0 +1,49 @@
+version: "3"
+
+services:
+
+  auth-flask-app:
+    build:
+     context: AuthorizationService
+
+    image: authserv
+    ports:
+      - "8090:8090" 
+    networks:
+      - my-network
+
+  mailagent-flask-app:
+    build:
+     context: MailAgent
+
+    image: mailagent
+    ports:
+      - "8008:8008" 
+      
+    networks:
+      - my-network
+
+  dbmanager-flask-app:
+    build:
+     context: DBManager
+
+    image: dbmanager
+    ports:
+      - "8000:8000" 
+
+    networks:
+      - my-network
+
+  cpp-app:
+    build: 
+      context: APIGateway
+
+    image: gateway
+    ports:
+    - "9090:9090" 
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge

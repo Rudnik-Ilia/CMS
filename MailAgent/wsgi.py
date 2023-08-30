@@ -1,9 +1,10 @@
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response, abort
 import pika
 from threading import Thread
 from sender_telegram import send_to_telegram
 
 app = Flask(__name__)
+
 
 # rabbit = pika.BlockingConnection(pika.ConnectionParameters("localhost"))
 # channel = rabbit.channel()
@@ -21,14 +22,20 @@ app = Flask(__name__)
 #
 # thread = Thread(target=channel.start_consuming)
 # thread.start()
-
-
 # channel.start_consuming()
 
 
-@app.route("/mailagent", methods=["GET", "POST"])
+# @app.before_request
+# def restrict_access():
+#     allowed_ips = ['0.0.0.0', '127.0.0.1']
+#     remote_ip = request.remote_addr
+#     if remote_ip not in allowed_ips:
+#         abort(403)
+
+
+@app.route("/mailagent", methods=["GET"])
 def start():
-    if request.method in ['POST', 'GET']:
+    if request.method == "GET":
         return make_response(jsonify("Im mail agent!"), 200)
 
 

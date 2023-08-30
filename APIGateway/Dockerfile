@@ -1,10 +1,10 @@
 FROM ubuntu:20.04
+
 ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && \
     apt-get install -y cmake g++ libboost-all-dev nlohmann-json3-dev && \
     apt-get clean
-
-# RUN git clone https://github.com/nlohmann/json.git /app/include/nlohmann
 
 WORKDIR /app
 

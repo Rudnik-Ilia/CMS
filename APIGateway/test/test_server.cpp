@@ -13,6 +13,15 @@
 #include "drafter.hpp"
 #include "validator.hpp"
 
+const std::string AUTH_SERV_ADDR = "auth-flask-app";
+const std::string AUTH_SERV_PORT = "8090";
+
+const std::string MAIL_AGENT_ADDR = "mailagent-flask-app";
+const std::string MAIL_AGENT_PORT = "8008";
+
+const std::string DB_MANAGER_ADDR = "dbmanager-flask-app";
+const std::string DB_MANAGER_PORT = "8000";
+
 
 
 int main() 
@@ -53,7 +62,7 @@ int main()
         TypeRequest(socket, request);
         MasterRequest requestSelf(socket, request);
         requestSelf.God_Mode();
-        requestSelf.ForwardTo("127.0.0.1", "8000", "rest");
+        requestSelf.ForwardTo(DB_MANAGER_ADDR, DB_MANAGER_PORT, "rest");
     });
 
     APP.ROUTE("/mailagent", 
@@ -61,7 +70,7 @@ int main()
         TypeRequest(socket, request);
         MasterRequest requestSelf(socket, request);
         requestSelf.God_Mode();
-        requestSelf.ForwardTo("127.0.0.1", "8008", "rest");
+        requestSelf.ForwardTo(MAIL_AGENT_ADDR, MAIL_AGENT_PORT, "rest");
     });
 
     APP.ROUTE("/authservice", 
@@ -69,7 +78,7 @@ int main()
         TypeRequest(socket, request);
         MasterRequest requestSelf(socket, request);
         requestSelf.God_Mode();
-        requestSelf.ForwardTo("127.0.0.1", "8090", "rest");
+        requestSelf.ForwardTo(AUTH_SERV_ADDR, AUTH_SERV_PORT, "rest");
     });
 
     APP.ROUTE("/items", 

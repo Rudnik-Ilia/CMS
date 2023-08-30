@@ -21,9 +21,15 @@ void MasterRequest::ForwardTo(const std::string& HOST, const std::string& PORT, 
         try
         {
             tcp::socket back_end_socket(m_socket.get_executor());
-            tcp::endpoint end_point(net::ip::make_address(HOST), std::stoi(PORT));
 
-            back_end_socket.connect(end_point);
+            // tcp::endpoint end_point(net::ip::make_address(HOST), std::stoi(PORT));
+
+            tcp::resolver resolver(back_end_socket.get_executor());
+            auto const results = resolver.resolve(HOST, PORT);
+
+            net::connect(back_end_socket, results);
+
+            // back_end_socket.connect(end_point);
 
             http::write(back_end_socket, m_request);
 
