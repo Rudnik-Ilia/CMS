@@ -19,17 +19,12 @@ void MasterRequest::ForwardTo(const std::string& HOST, const std::string& PORT, 
     if(m_authorized)
     {
         try
-        {
+        {   
             tcp::socket back_end_socket(m_socket.get_executor());
-
-            // tcp::endpoint end_point(net::ip::make_address(HOST), std::stoi(PORT));
-
             tcp::resolver resolver(back_end_socket.get_executor());
+
             auto const results = resolver.resolve(HOST, PORT);
-
             net::connect(back_end_socket, results);
-
-            // back_end_socket.connect(end_point);
 
             http::write(back_end_socket, m_request);
 
@@ -66,6 +61,7 @@ void MasterRequest::ResponseBack(http::status status, const std::string& body)
 int MasterRequest::Check_Token(std::string token)
 {
     int code = 0;
+    
     net::io_context ioContext;
     tcp::socket socket(ioContext);
 

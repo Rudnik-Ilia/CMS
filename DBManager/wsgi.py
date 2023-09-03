@@ -3,10 +3,10 @@ import json
 from db import db, app
 from models import Employees
 from request_for_currency import request_for_currency
-from hash_check import check_hash
 from config import APP_TOK, SQL_REQUEST_DELETE_SEQ, SQL_REQUEST_TRUNCATE_TABLE
 from rabbit import rabbit_connect_add
-from redis_cash import r
+from redis_cash import connection_redis
+import subprocess
 
 
 class CustomEncoder(json.JSONEncoder):
@@ -21,40 +21,50 @@ def get_check():
         return make_response(jsonify("Im DB manager!"), 200)
 
 
-@app.route('/items/login', methods=['POST'])
-def login():
-    if request.method == "POST":
-        if check_hash(request.json['login'], request.json['password']):
-            session["token"] = APP_TOK
-            res = make_response(jsonify(message="LOGIN is OK"), 200)
-            return res
-        else:
-            return make_response("WRONG LOGIN OR PASSWORD", 505)
+@app.route('/dbmanager/run_migrations', methods=['POST'])
+def run_migrations():
+    if request.method == 'POST':
+        try:
+            init_command = "flask db init"
+            migrate_command = "flask db migrate -m 'Create Employees table'"
+            upgrade_command = "flask db upgrade"
+
+            subprocess.run(init_command, shell=True)
+            subprocess.run(migrate_command, shell=True)
+            subprocess.run(upgrade_command, shell=True)
+
+            return jsonify(message="Migrations executed successfully"), 200
+        except Exception as e:
+            return jsonify(message="Error: " + str(e)), 500
+    else:
+        return jsonify(message="Method is not allowed"), 405
 
 
-@app.route('/items/all', methods=['GET'])
+#####################################################################################
+
+@app.route('/dbmanager/employees', methods=['GET'])
 def get_all_records():
     if request.method == "GET":
-        users = Employees.query.all()
-        if len(users) == 0:
-            Employees.sql_query(SQL_REQUEST_DELETE_SEQ)
+        employees = Employees.query.all()
+        if len(employees) == 0:
             return make_response(jsonify(message="Empty"), 201)
-        list_of_users = list()
-        for i in users:
-            list_of_users.append({"worker": {"id:": i.id, "name": i.name, "surname": i.surname, "salary": i.salary}})
-        return make_response(jsonify(list_of_users), 200)
+        list_of_employees = list()
+        for i in employees:
+            list_of_employees.append(
+                {"worker": {"id:": i.id, "name": i.name, "surname": i.surname, "salary": i.salary}})
+        return make_response(jsonify(list_of_employees), 200)
     else:
-        abort(401)
+        return jsonify(message="Method is not allowed"), 405
 
 
-@app.route('/items/<int:id>', methods=['GET'])
+@app.route('/dbmanager/employees/<int:id>', methods=['GET'])
 def get_item(id: int):
     if request.method == "GET":
         user = Employees.query.get_or_404(id)
     return jsonify({"name": user.name, "surname": user.surname, "salary": user.salary})
 
 
-@app.route('/items/create', methods=['POST'])
+@app.route('/dbmanager/employees', methods=['POST'])
 def create():
     if request.method == "POST":
         result = request.json
@@ -69,7 +79,7 @@ def create():
             return make_response(jsonify("Error"), 500)
 
 
-@app.route('/items/delete/<int:id>', methods=['DELETE'])
+@app.route('/dbmanager/employees/<int:id>', methods=['DELETE'])
 def remove_by_id(id: int):
     if request.method == "DELETE":
         item = Employees.query.get_or_404(id)
@@ -82,7 +92,7 @@ def remove_by_id(id: int):
             return make_response(jsonify("Error"), 500)
 
 
-@app.route('/items/delete/all', methods=['DELETE'])
+@app.route('/dbmanager/employees', methods=['DELETE'])
 def remove_all():
     if request.method == "DELETE":
         users_from_table = Employees.query.all()
@@ -90,32 +100,21 @@ def remove_all():
             return make_response(jsonify("Empty table"), 202)
         try:
             Employees.sql_query(SQL_REQUEST_TRUNCATE_TABLE)
+            Employees.sql_query(SQL_REQUEST_DELETE_SEQ)
             return make_response(jsonify("Done"), 200)
         except:
             db.session.rollback()
             return make_response(jsonify("Error"), 500)
 
 
-@app.route('/items/get_salary/<int:id>', methods=['GET'])
-def get_salary_id(id: int):
-    reply = " "
-    if request.method == "GET":
-        item = Employees.query.get_or_404(id)
-        try:
-            reply = request_for_currency()
-            return make_response(jsonify({"Salary is": f"{round((float(item.salary) / float(reply)), 2)} $"}), 200)
-        except:
-            return make_response(jsonify({"Error": reply}, 300))
-
-
-@app.route('/items/get_salary/<string:name>', methods=['GET'])
+@app.route('/dbmanager/employees/get_salary/<string:name>', methods=['GET'])
 def get_salary_name(name: str):
-    reply = " "
+    reply = None
     if request.method == "GET":
         item = Employees.query.filter_by(name=name.capitalize()).first_or_404()
         try:
-            reply = r.get("rate")
-            r.close()
+            reply = connection_redis().get("rate")
+            connection_redis().close()
             if reply is None:
                 reply = request_for_currency()
                 print("DB")
@@ -127,9 +126,9 @@ def get_salary_name(name: str):
             return make_response(jsonify({"Error": reply}, 300))
 
 
-@app.route('/items/update_name/<int:id>', methods=['PATCH'])
+@app.route('/dbmanager/employees/<int:id>', methods=['PUT'])
 def remove_by_name(id: int):
-    if request.method == "PATCH":
+    if request.method == "PUT":
         user = Employees.query.get_or_404(id)
         req = request.json
         user.salary = req["salary"]

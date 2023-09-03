@@ -12,4 +12,9 @@ EXPOSE 8000
 
 ENV NAME World
 
+CMD ["flask", "db", "init"]
+CMD ["flask", "db", "migrate", "-m", "'Create table'"]
+CMD ["flask", "db", "upgrate"]
+
+
 CMD ["python", "wsgi.py"]

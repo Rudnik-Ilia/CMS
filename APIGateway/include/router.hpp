@@ -3,6 +3,7 @@
 #include <map>
 #include <functional>
 #include <iostream>
+#include <regex>
 
 #include "helper_functions.hpp"
 
@@ -27,5 +28,6 @@ class Router
         void AddRoute(const std::string& path, std::function<void(http::request<http::string_body>&, tcp::socket&)> handler);
 
     private:
+        std::string GetRoot(const std::string url);
         std::map<const std::string, std::function<void(http::request<http::string_body>&, tcp::socket&)>> m_routes{};
 };

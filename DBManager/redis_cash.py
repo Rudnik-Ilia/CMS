@@ -1,8 +1,12 @@
 import redis
 
-try:
-    r = redis.Redis(host='localhost', port=6379, decode_responses=True)
-except:
-    print(Exception)
+
+def connection_redis():
+    try:
+        redis_conn = redis.Redis(host='redis', port=6379, decode_responses=True)
+        return redis_conn
+    except:
+        print(Exception)
+        return ...
 
 

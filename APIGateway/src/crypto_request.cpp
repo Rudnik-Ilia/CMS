@@ -1,5 +1,6 @@
 #include "crypto_request.hpp"
 #include "logger.hpp"
+#include "big_boo.hpp"
 
 
 Crypto_Request::Crypto_Request(tcp::socket& socket, http::request<http::string_body>& request, SRP& srp_module): m_srp(srp_module), m_socket(socket), m_request(request), m_jsonBuilder()
@@ -38,7 +39,9 @@ void Crypto_Request::Process_JWT_Obtaing(const std::string key)
         m_login = SRP::decrypt_by_key(m_data["login"], key);
         m_password = SRP::decrypt_by_key(m_data["password"], key);
         std::string res = m_jsonBuilder.AddKeyValue("login", m_login).AddKeyValue("password", m_password).GetString();
-        ForwardTo("127.0.0.1", "8090",res);
+
+        ForwardTo(AUTH_SERV_ADDR, AUTH_SERV_PORT, res);
+
         CONSOLE_LOG("Decrypted data: " + res);
     }
     else
@@ -70,9 +73,10 @@ void Crypto_Request::ForwardTo(const std::string& HOST, const std::string& PORT,
         m_request.body() = std::move(body);
 
         tcp::socket back_end_socket(m_socket.get_executor());
-        tcp::endpoint end_point(net::ip::make_address(HOST), std::stoi(PORT));
+        tcp::resolver resolver(back_end_socket.get_executor());
 
-        back_end_socket.connect(end_point);
+        auto const results = resolver.resolve(HOST, PORT);
+        net::connect(back_end_socket, results);
 
         http::write(back_end_socket, m_request);
 

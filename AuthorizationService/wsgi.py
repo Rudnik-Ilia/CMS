@@ -34,6 +34,7 @@ def _get_password_fromDB(name: str):
 #         abort(403)
 
 ##################################################
+
 @app.route("/authservice", methods=["GET"])
 def check_response():
     if request.method == "GET":

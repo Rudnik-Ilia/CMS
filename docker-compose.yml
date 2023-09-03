@@ -1,6 +1,30 @@
 version: "3"
 
 services:
+  redis:
+    image: redis:6.0.7
+    container_name: redis
+    restart: always
+    volumes:
+      - redis_volume_data:/data
+    ports:
+      - 6379:6379
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+        - "5672:5672"
+        - "15672:15672"
+    volumes:
+        - rabbitmq_data:/var/lib/rabbitmq/
+        - rabbitmq_logs:/var/log/rabbitmq
+    networks:
+      - my-network 
+    # healthcheck:
+    #   test: ["CMD", "nc", "-z", "localhost", "5672"]
+    #   interval: 10s
+    #   retries: 5
 
   auth-flask-app:
     build:
@@ -17,16 +41,17 @@ services:
      context: MailAgent
 
     image: mailagent
+    container_name: mailagent
     ports:
-      - "8008:8008" 
-      
+      - "8008:8008"  
     networks:
       - my-network
+    depends_on:
+      - rabbitmq
 
   dbmanager-flask-app:
     build:
      context: DBManager
-
     image: dbmanager
     ports:
       - "8000:8000" 
@@ -34,7 +59,7 @@ services:
     networks:
       - my-network
 
-  cpp-app:
+  gateway-cpp-app:
     build: 
       context: APIGateway
 
@@ -44,6 +69,43 @@ services:
     networks:
       - my-network
 
+  postgres-db:
+    image: postgres
+    container_name: local_pgdb
+    restart: always
+    ports:
+      - "5433:5433"
+    environment:
+      POSTGRES_USER: ilia
+      POSTGRES_PASSWORD: 12345
+    volumes:
+      - local_pgdata:/var/lib/postgresql/data
+    networks:
+      - my-network
+
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ilia53@admin.com
+      PGADMIN_DEFAULT_PASSWORD: 12345
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - my-network 
+
+
 networks:
   my-network:
     driver: bridge
+
+volumes:
+  local_pgdata:
+  pgadmin-data:
+  rabbitmq_data:
+  rabbitmq_logs:
+  redis_volume_data:
