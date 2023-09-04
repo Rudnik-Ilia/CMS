@@ -17,8 +17,10 @@ collection = db["users"]
 
 
 #################################################
+
+
 def _get_password_fromDB(name: str):
-    item = collection.find_one({"name": name}, {"_id": 0})
+    item = collection.find_one({"login": name}, {"_id": 0})
     if item is None:
         return None
     return str(item["password"])
@@ -58,20 +60,42 @@ def signin_and_gettoken():
         try:
             result = request.json
             print(result)
-            # password = _get_password_fromDB(result["login"])
-            # if password is None:
-            #     return make_response(jsonify("This user doest exist"), 406)
-            # if password == result["password"]:
-            payload = {
-                "login": result["login"],
-                "password": result["password"],
-                "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
-                }
-        #     else:
-        #         return make_response(jsonify("This password is wrong!"), 405)
+            password = _get_password_fromDB(result["login"])
+            if password is None:
+                return make_response(jsonify("This user doest exist"), 406)
+            if password == result["password"]:
+                payload = {
+                    "login": result["login"],
+                    "password": result["password"],
+                    "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
+                    }
+            else:
+                return make_response(jsonify("This password is wrong!"), 405)
         except KeyError as e:
             return jsonify({"error": "KeyError", "message": str(e)}), 400
         return make_response(jsonify({"token": get_jwt_token(payload)}), 200)
+
+
+@app.route("/authservice/users", methods=["POST"])
+def insert_user():
+    if request.method == "POST":
+        data = request.json
+        try:
+            collection.insert_one(data)
+            return make_response(jsonify("Done"), 200)
+        except:
+            return make_response(jsonify("Error"), 500)
+
+
+@app.route("/authservice/users", methods=["GET"])
+def get_all_users():
+    if request.method == "GET":
+        try:
+            data = collection.find()
+            user_list = [record for record in data]
+            return make_response(jsonify(user_list), 200)
+        except:
+            return make_response(jsonify("Error get"), 500)
 
 
 if __name__ == '__main__':
