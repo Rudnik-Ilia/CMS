@@ -7,13 +7,14 @@ def request_for_currency():
     try:
         client = freecurrencyapi.Client(KEY_FOR_OUTER_API)
         rate_from_db = str(round(client.latest(currencies=['ILS'])["data"]['ILS'], 2))
-
-        # conn = connection_redis()
-        # conn.set("rate", rate_from_db, 86400)
-        # conn.close()
+        # rate_from_db = str(3.17)
+        conn = connection_redis()
+        conn.set("rate", rate_from_db, 86400)
+        conn.close()
 
         return rate_from_db
-    except:
+    except Exception as e:
+        print(e)
         return "Redirect is failed!"
 
 
@@ -23,3 +24,7 @@ def perfom_convert():
     except:
         return "Redirect is failed!"
 
+
+
+
+perfom_convert()

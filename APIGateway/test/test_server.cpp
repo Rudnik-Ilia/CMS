@@ -13,16 +13,6 @@
 #include "drafter.hpp"
 #include "validator.hpp"
 
-// const std::string AUTH_SERV_ADDR = "auth-flask-app";
-// const std::string AUTH_SERV_PORT = "8090";
-
-// const std::string MAIL_AGENT_ADDR = "mailagent-flask-app";
-// const std::string MAIL_AGENT_PORT = "8008";
-
-// const std::string DB_MANAGER_ADDR = "dbmanager-flask-app";
-// const std::string DB_MANAGER_PORT = "8000";
-
-
 
 int main() 
 {

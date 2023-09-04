@@ -9,12 +9,6 @@ from redis_cash import connection_redis
 import subprocess
 
 
-class CustomEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Employees):
-            return {"worker": {"id:": obj.id, "name": obj.name, "surname": obj.surname, "salary": obj.salary}}
-
-
 @app.route('/dbmanager', methods=['GET'])
 def get_check():
     if request.method == "GET":
@@ -57,10 +51,10 @@ def get_all_records():
         return jsonify(message="Method is not allowed"), 405
 
 
-@app.route('/dbmanager/employees/<int:id>', methods=['GET'])
-def get_item(id: int):
+@app.route('/dbmanager/employees/<string:name>', methods=['GET'])
+def get_item(name: str):
     if request.method == "GET":
-        user = Employees.query.get_or_404(id)
+        user = Employees.query.filter_by(name=name.capitalize()).first_or_404()
     return jsonify({"name": user.name, "surname": user.surname, "salary": user.salary})
 
 
@@ -79,10 +73,10 @@ def create():
             return make_response(jsonify("Error"), 500)
 
 
-@app.route('/dbmanager/employees/<int:id>', methods=['DELETE'])
-def remove_by_id(id: int):
+@app.route('/dbmanager/employees/<string:name>', methods=['DELETE'])
+def remove_by_id(name: str):
     if request.method == "DELETE":
-        item = Employees.query.get_or_404(id)
+        item = Employees.query.filter_by(name=name.capitalize()).first_or_404()
         try:
             item.delete()
             rabbit_connect_add(f"{item.name}, you are fired! Get back the laptop!")
@@ -107,8 +101,9 @@ def remove_all():
             return make_response(jsonify("Error"), 500)
 
 
-@app.route('/dbmanager/employees/get_salary/<string:name>', methods=['GET'])
+@app.route('/dbmanager/employees/salary/<string:name>', methods=['GET'])
 def get_salary_name(name: str):
+    print("Enter method")
     reply = None
     if request.method == "GET":
         item = Employees.query.filter_by(name=name.capitalize()).first_or_404()
@@ -117,21 +112,18 @@ def get_salary_name(name: str):
             connection_redis().close()
             if reply is None:
                 reply = request_for_currency()
-                print("DB")
-                return make_response(jsonify({"Salary is": f"{round((float(item.salary) / float(reply)), 2)} $"}), 200)
+                return make_response(jsonify({"Salary is (DB)": f"{round((float(item.salary) / float(reply)), 2)} $"}), 200)
             else:
-                print("REDIS")
-                return make_response(jsonify({"Salary is": f"{round((float(item.salary) / float(reply)), 2)} $"}), 200)
+                return make_response(jsonify({"Salary is (CASH)": f"{round((float(item.salary) / float(reply)), 2)} $"}), 200)
         except:
             return make_response(jsonify({"Error": reply}, 300))
 
 
-@app.route('/dbmanager/employees/<int:id>', methods=['PUT'])
-def remove_by_name(id: int):
+@app.route('/dbmanager/employees/<int:id>/<int:salary>', methods=['PUT'])
+def remove_by_name(id: int, salary: int):
     if request.method == "PUT":
         user = Employees.query.get_or_404(id)
-        req = request.json
-        user.salary = req["salary"]
+        user.salary = salary
         try:
             db.session.commit()
             return make_response(jsonify("Done"), 200)

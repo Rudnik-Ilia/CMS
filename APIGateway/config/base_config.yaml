@@ -5,15 +5,15 @@ gateway:
 
   services:
     mailagent:
-      address: 127.0.0.1
+      address: mailagent-flask-app"
       port: 8008
 
     authservice:
-      address: 127.0.0.1
+      address: auth-flask-app
       port: 8090
 
     dbmanager:
-      address: 127.0.0.1
+      address: dbmanager-flask-app
       port: 8000
 
   logging:
