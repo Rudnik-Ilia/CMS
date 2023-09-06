@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 10s
+
+scrape_configs:
+  - job_name: 'my-web-app'
+    static_configs:
+      - targets: ['mailagent-flask-app:8008']
+      - targets: ['auth-flask-app:8090']
+      - targets: ['dbmanager-flask-app:8000']
+      # - targets: ['dbmanager-flask-app:8000']
+      # - targets: ['rabbitmq:5672']

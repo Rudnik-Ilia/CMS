@@ -24,7 +24,7 @@ int main()
     APP.ROUTE("/", 
     {
         Drafter draft;
-        std::cout << Validator::Check(request, draft.GET().HAS_BODY().dot()) << std::endl;
+        std::cout << Validator::Check(request, draft.GET().dot()) << std::endl;
  
         MasterRequest requestSelf(socket, request);
         requestSelf.ResponseBack(http::status::ok, "I am Big Boo!!!!");

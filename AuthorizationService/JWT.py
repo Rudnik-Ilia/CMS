@@ -25,9 +25,9 @@ def check_jwt_token(token):
 
 
 payload = {
-    "login": "login",
+    "login": "12345",
     "password": "password",
     "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
 }
 
-print(get_jwt_token(payload))
+# print(get_jwt_token(payload))

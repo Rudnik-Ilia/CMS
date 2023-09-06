@@ -81,7 +81,7 @@ services:
 
     image: gateway
     ports:
-    - "9090:9090" 
+    - "9999:9999" 
     networks:
       - my-network
 
@@ -113,6 +113,24 @@ services:
       - pgadmin-data:/var/lib/pgadmin
     networks:
       - my-network 
+
+
+  # prometheus:
+  #   image: prom/prometheus
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./prometheus-config/prometheus-config.yml:/etc/prometheus/prometheus.yml
+  #   command: --config.file=/etc/prometheus/prometheus.yml 
+  #   networks:
+  #   - my-network
+
+  # grafana:
+  #   image: grafana/grafana
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - my-network
 
 
 networks:

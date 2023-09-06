@@ -3,7 +3,6 @@
 #include <map>
 #include <functional>
 #include <iostream>
-#include <regex>
 
 #include "helper_functions.hpp"
 

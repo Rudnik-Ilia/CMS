@@ -19,7 +19,7 @@ const std::string DB_MANAGER_PORT = "8000";
 class BigBoo
 {
     public:
-        BigBoo(std::string ip_addr = "0.0.0.0", int port = 9090);
+        BigBoo(std::string ip_addr = "0.0.0.0", int port = 9999);
         BigBoo(const BigBoo& other) = delete;
         BigBoo& operator=(const BigBoo& other) = delete;
         BigBoo(BigBoo&& other) = delete;

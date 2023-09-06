@@ -16,15 +16,16 @@ db = cluster["CMS"]
 collection = db["users"]
 
 
-#################################################
-
-
-def _get_password_fromDB(name: str):
+def get_password_from_db(name: str):
     item = collection.find_one({"login": name}, {"_id": 0})
     if item is None:
         return None
-    return str(item["password"])
+    return item
 
+
+def create_expiration_time(period: int = 5):
+    expiration_time = datetime.datetime.utcnow() + datetime.timedelta(minutes=period)
+    return int(expiration_time.timestamp())
 
 ##################################################
 
@@ -36,6 +37,7 @@ def _get_password_fromDB(name: str):
 #         abort(403)
 
 ##################################################
+
 
 @app.route("/authservice", methods=["GET"])
 def check_response():
@@ -60,15 +62,15 @@ def signin_and_gettoken():
         try:
             result = request.json
             print(result)
-            password = _get_password_fromDB(result["login"])
-            if password is None:
+            user_data = get_password_from_db(result["login"])
+            if user_data is None:
                 return make_response(jsonify("This user doest exist"), 406)
-            if password == result["password"]:
+            if user_data["password"] == result["password"]:
+
                 payload = {
-                    "login": result["login"],
-                    "password": result["password"],
-                    "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
-                    }
+                    "role": user_data["role"],
+                    "exp": create_expiration_time()
+                }
             else:
                 return make_response(jsonify("This password is wrong!"), 405)
         except KeyError as e:
@@ -96,6 +98,11 @@ def get_all_users():
             return make_response(jsonify(user_list), 200)
         except:
             return make_response(jsonify("Error get"), 500)
+
+
+@app.route("/metrics", methods=["GET"])
+def state():
+    return make_response(jsonify("Im OK"), 200)
 
 
 if __name__ == '__main__':

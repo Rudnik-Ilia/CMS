@@ -1,6 +1,8 @@
 #pragma once
 
+// #include <jwt.h>
 #include "helper_functions.hpp"
+#include "credention.hpp"
 
 class MasterRequest
 {
@@ -29,6 +31,7 @@ class MasterRequest
 
     private:
         std::string m_token;
+
         bool m_authorized;
         tcp::socket& m_socket;
         http::request<http::string_body>& m_request;

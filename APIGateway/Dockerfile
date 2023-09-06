@@ -13,7 +13,7 @@ COPY test /app/test
 COPY include /app/include
 COPY CMakeLists.txt /app
 
-EXPOSE 9090
+EXPOSE 9999
 
 RUN mkdir build && \
     cd build && \

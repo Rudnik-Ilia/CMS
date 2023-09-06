@@ -1,7 +1,7 @@
 #include "../include/master_request.hpp"
 
 
-MasterRequest::MasterRequest(tcp::socket& socket, http::request<http::string_body>& request): m_token(std::string("No token")), m_authorized(false), m_socket(socket), m_request(request)
+MasterRequest::MasterRequest(tcp::socket& socket, http::request<http::string_body>& request): m_token("No token"), m_authorized(false), m_socket(socket), m_request(request)
 {
     if(m_authorized != true)
     {
@@ -58,41 +58,6 @@ void MasterRequest::ResponseBack(http::status status, const std::string& body)
     http::write(m_socket, response); 
 }
 
-int MasterRequest::Check_Token(std::string token)
-{
-    int code = 0;
-    
-    net::io_context ioContext;
-    tcp::socket socket(ioContext);
-
-    tcp::endpoint end_point(net::ip::make_address("127.0.0.1"), std::stoi("8090"));
-    socket.connect(end_point);
-
-    http::request<http::string_body> request(http::verb::post, "/check", 11);
-    request.set(http::field::content_type, "application/json"); 
-    request.set(http::field::host, "172.0.0.1");
-    request.set(http::field::user_agent, "Boost.Beast");
-
-    const std::string requestBody = R"({"token": ")" + token + R"("})";
-    request.body() = requestBody;
-
-    request.prepare_payload();
-    http::write(socket, request);
-
-    beast::flat_buffer buffer;
-    http::response<http::string_body> response;
-    http::read(socket, buffer, response);
-
-    if(response.result() == http::status::ok)
-    {
-        code = 1;
-    }
-
-    socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
-    socket.close();
-
-    return code;
-}
 
 void MasterRequest::Get_Token()
 {
@@ -108,10 +73,50 @@ void MasterRequest::Get_Token()
     }
 }
 
+int MasterRequest::Check_Token(std::string token)
+{
+    
+}
+
 bool MasterRequest::Authorized()
 {
     return m_authorized;
 }
+// int MasterRequest::Check_Token(std::string token)
+// {
+//     int code = 0;
+    
+//     net::io_context ioContext;
+//     tcp::socket socket(ioContext);
+
+//     tcp::endpoint end_point(net::ip::make_address("127.0.0.1"), std::stoi("8090"));
+//     socket.connect(end_point);
+
+//     http::request<http::string_body> request(http::verb::post, "/check", 11);
+
+//     request.set(http::field::content_type, "application/json"); 
+//     request.set(http::field::user_agent, "Boost.Beast");
+
+//     const std::string requestBody = R"({"token": ")" + token + R"("})";
+//     request.body() = requestBody;
+
+//     request.prepare_payload();
+//     http::write(socket, request);
+
+//     beast::flat_buffer buffer;
+//     http::response<http::string_body> response;
+//     http::read(socket, buffer, response);
+
+//     if(response.result() == http::status::ok)
+//     {
+//         code = 1;
+//     }
+
+//     socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+//     socket.close();
+
+//     return code;
+// }
 
 // void MasterRequest::RequestTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path)
 // {
