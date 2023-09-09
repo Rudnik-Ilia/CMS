@@ -4,7 +4,7 @@
 
 const char *token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJleHAiOjE2OTM5ODY3Nzh9.hUNcCEFF__nhce6zTY2yKjB34-EWMyQG2lIVN7HNJRI";
 const std::string token_str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJleHAiOjE2OTM5ODY3Nzh9.hUNcCEFF__nhce6zTY2yKjB34-EWMyQG2lIVN7HNJRI";
-const unsigned char key[] = "ivwnviewnvakssnvwiu1ewcecenevoiewnvwi";
+
 
 // if (jwt_get_alg(parsed_token) == JWT_ALG_HS256 &&
 //     jwt_get_grant(parsed_token, "iss") != nullptr &&
@@ -17,65 +17,96 @@ const unsigned char key[] = "ivwnviewnvakssnvwiu1ewcecenevoiewnvwi";
 class JWTMaster
 {
     public:
-        JWTMaster(const std::string& token): m_parsed_token(nullptr), m_token(token.c_str()){}
+        JWTMaster(const std::string& token): m_parsed_token(nullptr), m_token(token.c_str()), m_is_expired(true), m_is_valid(false) 
+        {
+            Init();
+        }
         JWTMaster(const JWTMaster& other) = delete;
         JWTMaster& operator=(const JWTMaster& other) = delete;
         JWTMaster(JWTMaster&& other) = delete;
         JWTMaster& operator=(JWTMaster&& other) = delete;
-
 
         ~JWTMaster()
         {
             jwt_free(m_parsed_token);
         }
 
-        int Decode_Token()
+        std::string GetStringField(const std::string& field_name)
         {
-            int result = jwt_decode(&m_parsed_token, m_token, m_signature, m_size_signature);
-            return result;
+            if(m_is_valid != false)
+            {
+                const char* p_field = field_name.c_str();
+                return std::string(jwt_get_grant(m_parsed_token, p_field));
+            }
+            return "";
+        }
+
+        bool IsExpired()
+        {
+            return !m_is_expired;
         }
 
     private:
+
+        void Init()
+        {
+            CheckValid();
+            CheckExpired();
+        }
+
+        void CheckValid()
+        {
+            int result = jwt_decode(&m_parsed_token, m_token, m_signature, m_size_signature);
+            if((result == 0) && CheckAlgo())
+            {
+                m_is_valid = (0 == result); 
+            }
+        }
+
+        void CheckExpired()
+        {
+            if(m_is_valid)
+            {
+                long exp_claim = jwt_get_grant_int(m_parsed_token, "exp");
+                if(0 != exp_claim)
+                {
+                    m_is_expired = ((time_t)exp_claim > std::time(nullptr));
+                }
+            }
+        }
+
+        bool CheckAlgo()
+        {
+            return (jwt_get_alg(m_parsed_token) == m_algo);
+        }
+
         jwt_t * m_parsed_token;
         const char * m_token;
+        bool m_is_expired;
+        bool m_is_valid; 
+
         static const unsigned char m_signature[];
-        static int m_size_signature;   
+        static int m_size_signature; 
+        static jwt_alg_t m_algo;
 };
 
 const unsigned char JWTMaster::m_signature[] = {"ivwnviewnvakssnvwiu1ewcecenevoiewnvwi"};
 int JWTMaster::m_size_signature = sizeof(m_signature);
+jwt_alg_t JWTMaster::m_algo = JWT_ALG_HS256;
 
 
-enum SS: u_int8_t
-{
-    ADMIN = 0b00000000,
-    MANAGER = 0b10000001
-
-};
 
 int main()
 {
 
     JWTMaster jwt(token_str);
 
-    if(!jwt.Decode_Token())
-    {
-        std::cout << "Fine" << std::endl;
-    }
-    else
-    {
-        std::cout << "Wrong" << std::endl;
-    }
+    std::cout <<  jwt.GetStringField("role") << std::endl;
+    std::cout <<  jwt.IsExpired() << std::endl;
+
+
+
     
-    std::cout << MANAGER << std::endl;
-
-
-
-
-
-
-
-
 
     // jwt_t *parsed_token = nullptr;
 
