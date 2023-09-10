@@ -2,8 +2,7 @@
 #include <jwt.h>
 #include <ctime>
 
-const char *token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJleHAiOjE2OTM5ODY3Nzh9.hUNcCEFF__nhce6zTY2yKjB34-EWMyQG2lIVN7HNJRI";
-const std::string token_str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJleHAiOjE2OTM5ODY3Nzh9.hUNcCEFF__nhce6zTY2yKjB34-EWMyQG2lIVN7HNJRI";
+const std::string token_str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJkQqdVKP13Wqjs";
 
 
 // if (jwt_get_alg(parsed_token) == JWT_ALG_HS256 &&
@@ -46,6 +45,11 @@ class JWTMaster
             return !m_is_expired;
         }
 
+        bool Check()
+        {
+            return m_is_expired && m_is_valid;
+        }
+
     private:
 
         void Init()
@@ -57,9 +61,11 @@ class JWTMaster
         void CheckValid()
         {
             int result = jwt_decode(&m_parsed_token, m_token, m_signature, m_size_signature);
+            std::cout << result << std::endl;
             if((result == 0) && CheckAlgo())
             {
-                m_is_valid = (0 == result); 
+                std::cout << 'p' << std::endl;
+                m_is_valid = true; 
             }
         }
 
@@ -103,6 +109,7 @@ int main()
 
     std::cout <<  jwt.GetStringField("role") << std::endl;
     std::cout <<  jwt.IsExpired() << std::endl;
+    std::cout <<  jwt.Check() << std::endl;
 
 
 

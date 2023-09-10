@@ -56,7 +56,7 @@ def check_token():
             return make_response(jsonify("FORBIDDEN ACCESS"), 405)
 
 
-@app.route("/signin", methods=["POST"])
+@app.route("/authservice/signin", methods=["POST"])
 def signin_and_gettoken():
     if request.method == "POST":
         try:

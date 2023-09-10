@@ -35,4 +35,5 @@ class MasterRequest
         bool m_authorized;
         tcp::socket& m_socket;
         http::request<http::string_body>& m_request;
+        
 };
