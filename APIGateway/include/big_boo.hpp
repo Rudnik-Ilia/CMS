@@ -1,9 +1,14 @@
 #pragma once
 
+#include <atomic>
+#include <csignal>
+
 #include "key_storage.hpp"
 #include "router.hpp"
 #include "helper_functions.hpp"
 #include "logger.hpp"
+#include "credention.hpp"
+#include "exeptions.hpp"
 
 #define ROUTE(path, fn) Routing(path, [&APP](http::request<http::string_body>& request, tcp::socket& socket)fn)
 
@@ -20,7 +25,7 @@ class BigBoo
 {
     public:
         BigBoo(std::string ip_addr = "0.0.0.0", int port = 9999);
-        BigBoo(const BigBoo& other) = delete;
+        BigBoo(const BigBoo& other) = default;
         BigBoo& operator=(const BigBoo& other) = delete;
         BigBoo(BigBoo&& other) = delete;
         BigBoo& operator=(BigBoo& other) = delete;
@@ -34,16 +39,17 @@ class BigBoo
 
         std::string GetKey(const std::string clientMix);
 
-
 // TEMPORALY******
         void PrintStorage();
 
     private:
+        static void StopHandler(int signal);
+        static std::atomic<bool> m_stop_flag;
 
         net::io_context m_ioContext{};
         tcp::acceptor m_acceptor;
         Router m_router;
         KeyStorage m_keyStorage;  
-        Logger m_logger;
+        // Logger m_logger;
 };
 

@@ -1,8 +1,10 @@
 #pragma once
 
-// #include <jwt.h>
+
+#include <memory>
 #include "helper_functions.hpp"
 #include "credention.hpp"
+#include "JWTmaster.hpp"
 
 class MasterRequest
 {
@@ -20,7 +22,6 @@ class MasterRequest
         void ForwardTo(const std::string& HOST, const std::string& PORT, const std::string& body);
 
         void Get_Token();
-        int Check_Token(std::string token);
         bool Authorized();
 
 // TEMPORALY FOR TESTING
@@ -36,4 +37,5 @@ class MasterRequest
         tcp::socket& m_socket;
         http::request<http::string_body>& m_request;
         
+        std::unique_ptr<JWTMaster> m_jwt_master;
 };

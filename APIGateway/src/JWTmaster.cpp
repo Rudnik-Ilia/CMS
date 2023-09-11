@@ -1,7 +1,9 @@
 #include "JWTmaster.hpp"
 
 const unsigned char JWTMaster::m_signature[] = {"ivwnviewnvakssnvwiu1ewcecenevoiewnvwi"};
+
 int JWTMaster::m_size_signature = sizeof(m_signature);
+
 jwt_alg_t JWTMaster::m_algo = JWT_ALG_HS256;
 
 
@@ -12,9 +14,7 @@ JWTMaster::JWTMaster(const std::string& token):m_parsed_token(nullptr), m_token(
 
 JWTMaster::~JWTMaster()
 {
-
     jwt_free(m_parsed_token);
-
 }
 
 std::string JWTMaster::GetStringField(const std::string& field_name)
@@ -26,7 +26,6 @@ std::string JWTMaster::GetStringField(const std::string& field_name)
     }
     return "";
 }
-
 
 bool JWTMaster::IsExpired()
 {
@@ -47,10 +46,8 @@ void JWTMaster::Init()
 void JWTMaster::CheckValid()
 {
     int result = jwt_decode(&m_parsed_token, m_token, m_signature, m_size_signature);
-    std::cout << result << std::endl;
     if((result == 0) && CheckAlgo())
     {
-        std::cout << 'p' << std::endl;
         m_is_valid = true; 
     }
 }

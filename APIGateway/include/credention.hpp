@@ -29,3 +29,10 @@ enum METHODS: u_int8_t
     PUT_METHOD = 2,
     DELETE_METHOD = 3
 };
+
+enum DEBUG_LEVEL: u_int8_t
+{
+    INFO = 0,
+    WARNING,
+    ERROR
+};

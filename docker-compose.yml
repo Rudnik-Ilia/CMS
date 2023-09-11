@@ -78,7 +78,7 @@ services:
   gateway-cpp-app:
     build: 
       context: APIGateway
-
+  
     image: gateway
     ports:
     - "9999:9999" 

@@ -14,6 +14,8 @@
 #include "validator.hpp"
 
 
+
+
 int main() 
 {
     // YAML::Node config = YAML::LoadFile("../config/base_config.yaml");
@@ -21,11 +23,11 @@ int main()
    
 // ROUTING***************************************************************************************************
 
+
     APP.ROUTE("/", 
     {
-        Drafter draft;
-        std::cout << Validator::Check(request, draft.GET().dot()) << std::endl;
- 
+        // Drafter draft;
+        // std::cout << Validator::Check(request, draft.GET().dot()) << std::endl;
         MasterRequest requestSelf(socket, request);
         requestSelf.ResponseBack(http::status::ok, "I am Big Boo!!!!");
     });
@@ -83,7 +85,6 @@ int main()
 // START SERVER******************************************************************
 
     APP.Run();
-
     return 0;
 }
 

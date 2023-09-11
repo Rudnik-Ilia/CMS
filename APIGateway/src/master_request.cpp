@@ -1,11 +1,14 @@
 #include "../include/master_request.hpp"
 
 
+
 MasterRequest::MasterRequest(tcp::socket& socket, http::request<http::string_body>& request): m_token("No token"), m_authorized(false), m_socket(socket), m_request(request)
 {
     if(m_authorized != true)
     {
         Get_Token();
+        m_jwt_master = std::make_unique<JWTMaster>(m_token);
+        m_authorized = m_jwt_master->Check();
     }
 }
 
@@ -26,13 +29,13 @@ void MasterRequest::ForwardTo(const std::string& HOST, const std::string& PORT, 
             auto const results = resolver.resolve(HOST, PORT);
             net::connect(back_end_socket, results);
 
-            http::write(back_end_socket, m_request);
+            write(back_end_socket, m_request);
 
             beast::flat_buffer buffer;
             http::response<http::string_body> response;
-            http::read(back_end_socket, buffer, response);
+            read(back_end_socket, buffer, response);
 
-            http::write(m_socket, response);
+            write(m_socket, response);
             return;
         }
         catch(const std::exception& e)
@@ -55,7 +58,7 @@ void MasterRequest::ResponseBack(http::status status, const std::string& body)
     response.set(http::field::content_type, "text/plain");
     response.body() = body;
     response.prepare_payload();
-    http::write(m_socket, response); 
+    write(m_socket, response); 
 }
 
 
@@ -65,18 +68,10 @@ void MasterRequest::Get_Token()
 
     if(author.to_string().size() != 0)
     {
-        if(Check_Token(author.to_string()) == 1)
-        {
-            m_token = author.to_string();
-            m_authorized = true;
-        }
+        m_token = author.to_string();
     }
 }
 
-int MasterRequest::Check_Token(std::string token)
-{
-    
-}
 
 bool MasterRequest::Authorized()
 {

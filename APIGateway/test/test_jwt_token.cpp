@@ -105,7 +105,7 @@ jwt_alg_t JWTMaster::m_algo = JWT_ALG_HS256;
 int main()
 {
 
-    JWTMaster jwt(token_str);
+    JWTMaster jwt("No token");
 
     std::cout <<  jwt.GetStringField("role") << std::endl;
     std::cout <<  jwt.IsExpired() << std::endl;
