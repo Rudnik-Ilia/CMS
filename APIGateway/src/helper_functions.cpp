@@ -13,13 +13,13 @@ int TypeRequest(tcp::socket& socket, http::request<http::string_body>& request)
     switch (request.method()) 
     {
         case http::verb::get:
-            CONSOLE_LOG("GET request from: " + request.target().to_string());
+            LOGINFO("GET request from: " + request.target().to_string());
             return GET;
 
         case http::verb::post:
             if(!request.body().empty())
             {
-                CONSOLE_LOG("POST request from: " + request.target().to_string());
+                LOGINFO("POST request from: " + request.target().to_string());
                 return POST;
             }
             else

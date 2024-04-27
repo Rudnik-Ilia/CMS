@@ -61,7 +61,6 @@ void MasterRequest::ResponseBack(http::status status, const std::string& body)
     write(m_socket, response); 
 }
 
-
 void MasterRequest::Get_Token()
 {
     auto author = m_request[boost::beast::http::field::authorization];
@@ -71,7 +70,6 @@ void MasterRequest::Get_Token()
         m_token = author.to_string();
     }
 }
-
 
 bool MasterRequest::Authorized()
 {

@@ -14,8 +14,8 @@
 #define DEBUGLINE printf("\n%s:%d\n", __FILE__, __LINE__)
 #define LOGINFO(data) std::cout << data << std::endl
 
-static const char start[] = "\x1b[1;31m--------------- BIG_BO START ---------------\x1b[0m\n";
-static const char end[] =   "\x1b[1;31m--------------- BIG_BO STOP -----------------\x1b[0m\n";
+static const char start[] = "\x1b[1;31m--------------- SERVER START ---------------\x1b[0m\n";
+static const char end[] =   "\x1b[1;31m--------------- SERVER STOP -----------------\x1b[0m\n";
 
 namespace beast = boost::beast;
 namespace http = beast::http;

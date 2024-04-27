@@ -15,7 +15,6 @@
 
 
 
-
 int main() 
 {
     // YAML::Node config = YAML::LoadFile("../config/base_config.yaml");
@@ -74,7 +73,17 @@ int main()
     });
 
 
-// GOD's ACTIONS****************************************************************
+// METRICS *********************************************************************
+
+    APP.ROUTE("/metrics", 
+    {
+        TypeRequest(socket, request);
+        MasterRequest requestSelf(socket, request);
+        requestSelf.God_Mode();
+        requestSelf.ResponseBack(http::status::ok, "# HELP http_requests_get_total The total number of GET requests. \n # TYPE http_requests_get_total counter");
+    });
+
+// GOD's ACTIONS ***************************************************************
 
     APP.ROUTE("/listStorage", 
     {

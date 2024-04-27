@@ -22,7 +22,6 @@ class Crypto_Request
         void Process_JWT_Obtaing(const std::string key);
 
         std::string GetClientMix();
- 
     private:
         SRP& m_srp;  
         tcp::socket& m_socket;

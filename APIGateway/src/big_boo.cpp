@@ -8,6 +8,7 @@ std::atomic<bool> BigBoo::m_stop_flag(true);
 BigBoo::BigBoo(std::string ip_addr, int port): m_acceptor(m_ioContext, tcp::endpoint(net::ip::make_address(ip_addr), port)), m_router(), m_keyStorage()
 {
     std::signal(SIGINT, BigBoo::StopHandler);
+    std::signal(SIGTERM, BigBoo::StopHandler);
     LOGINFO(start);
     LOGINFO("server run on [" + m_acceptor.local_endpoint().address().to_string() + ':' + std::to_string(m_acceptor.local_endpoint().port()) +"]");
 }

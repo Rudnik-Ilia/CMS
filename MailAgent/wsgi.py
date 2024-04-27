@@ -1,13 +1,13 @@
-from flask import Flask, request, jsonify, make_response, abort
+from flask import Flask, request, jsonify, make_response, abort, Response
 import pika
 from pika import exceptions
 from threading import Thread
 from sender_telegram import send_to_telegram
 from retry import retry
-
+from prometheus_client import Gauge, generate_latest
 
 app = Flask(__name__)
-
+service_metric = Gauge('service_metric', 'Description of service_metric')
 HOST = "rabbitmq"
 PORT = 5672
 
@@ -47,8 +47,15 @@ start_reading()
 @app.route("/mailagent", methods=["GET"])
 def start():
     if request.method == "GET":
-        return make_response(jsonify("Im mail agent!"), 200)
+        return (make_response(jsonify("Im mail agent!"), 200))
 
+
+@app.route('/metrics', methods=["GET"])
+def metrics():
+    value = service_metric._value.get()
+    prometheus_metrics = generate_latest()
+    combined_metrics = f'service_metric {value}\n{prometheus_metrics.decode("utf-8")}'
+    return Response(combined_metrics, mimetype="text/plain")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8008, debug=True)

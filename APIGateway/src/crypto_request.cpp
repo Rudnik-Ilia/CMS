@@ -42,15 +42,13 @@ void Crypto_Request::Process_JWT_Obtaing(const std::string key)
 
         ForwardTo(AUTH_SERV_ADDR, AUTH_SERV_PORT, res);
 
-        CONSOLE_LOG("Decrypted data: " + res);
+        LOGINFO("Decrypted data: " + res);
     }
     else
     {
         ResponseBack(http::status::bad_request, "Your mix was alredy used!");
     }
-
 }
-
 
 void Crypto_Request::ResponseBack(http::status status, const std::string& body)
 {
@@ -78,13 +76,13 @@ void Crypto_Request::ForwardTo(const std::string& HOST, const std::string& PORT,
         auto const results = resolver.resolve(HOST, PORT);
         net::connect(back_end_socket, results);
 
-        http::write(back_end_socket, m_request);
+        write(back_end_socket, m_request);
 
         beast::flat_buffer buffer;
         http::response<http::string_body> response;
-        http::read(back_end_socket, buffer, response);
+        read(back_end_socket, buffer, response);
 
-        http::write(m_socket, response);
+        write(m_socket, response);
         return;
     }
     catch(const std::exception& e)
@@ -97,26 +95,3 @@ std::string Crypto_Request::GetClientMix()
 {
     return m_client_mix;
 }
-
-// void Crypto_Request::RequestTo(const std::string& HOST, const std::string& PORT, const std::string& rest_of_path, const std::string body)
-// {
-//     tcp::endpoint end_point(net::ip::make_address(HOST), std::stoi(PORT));
-//     m_socket.connect(end_point);
-
-//     http::request<http::string_body> request;
-//     request.method(http::verb::post);
-//     request.target(rest_of_path);
-//     request.version(11);
-//     request.set(http::field::content_type, "application/json"); 
-//     request.set(http::field::host, HOST + ":" + PORT);
-//     request.set(http::field::user_agent, "Boost.Beast");
-//     request.body() = body;
-//     request.prepare_payload();
-//     http::write(m_socket, request);
-
-//     // beast::flat_buffer buffer;
-//     // http::response<http::string_body> response;
-//     // http::read(socket, buffer, response);
-
-//     // std::cout << response.body() << std::endl;
-// }
